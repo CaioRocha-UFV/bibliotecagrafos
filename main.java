@@ -18,7 +18,6 @@ public class main {
         
         // Mostra o grafo, seus vértices e quem são seus vizinhos
         shy.ExibirGrafo();
-        System.out.println("Ordem: " + shy.getOrdem());
         System.out.println("Tamanho: " + shy.getTamanho());
     }
 }
