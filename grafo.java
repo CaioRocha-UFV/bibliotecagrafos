@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 class Grafo{
 
-    int numeroDeVertices;
-    ArrayList<Vertice> grafo;
+    private int numeroDeVertices;
+    private ArrayList<Vertice> grafo;
 
     void CriarGrafo(String fileName) throws FileNotFoundException, IOException{
 
@@ -38,7 +38,8 @@ class Grafo{
 
         try {
             ArrayList<Vertice> adjList  = new ArrayList<Vertice>();
-            String currentLine, pathName;
+            String currentLine;
+            //String pathName;
             int numDeVertices = 0;
 
             // Setup da leitura do Arquivo
@@ -71,6 +72,7 @@ class Grafo{
                 if (retornoFuncao[0] == 0){
                     vertice1 = new Vertice(index1);
                     adjList.add(vertice1);    
+
                 } else{
                     vertice1 = adjList.get(retornoFuncao[1]);
                 }
@@ -98,6 +100,20 @@ class Grafo{
                ex.printStackTrace();
             }
         }
+    }
+
+    //Contar as arestas, basta dividir por 2, já que a aresta
+    //sempre passa por 2 vertices
+    public int getTamanho() {
+        int numArestas = 0;
+
+        for(Vertice vertice: grafo){
+            for(Aresta aresta: vertice.vizinhos){
+                numArestas += 1;
+            }
+        }
+
+        return numArestas/2;
     }
 
     // Verifica se existe vértice com determinado índice
