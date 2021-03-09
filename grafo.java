@@ -206,6 +206,10 @@ class Grafo{
         return grau;
     }
 
+    // Função EXTERNA
+    // Recebe: Index do vértice
+    // Ação: Busca pelos vizinhso do vértice através de seu index
+    // Retorna: Uma string {1, 2, 3} de vizinhos
     public String VizinhosDoVerticeDeIndice(int index){
         Vertice vertice = VerticeDeIndex(this.grafo , index);
         String vizinhos = vertice.StringDeVizinhos();
