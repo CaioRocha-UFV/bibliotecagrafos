@@ -2,7 +2,7 @@ package Grafo;
 
 import java.util.*;
 
-public class Vertice {
+class Vertice {
     int index;  
     boolean marcado;
     ArrayList<Aresta> vizinhos;

@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
-import Algoritmos.Dijkstra;
-
 public class Grafo{
     private int numeroDeVertices;
     private ArrayList<Vertice> grafo;

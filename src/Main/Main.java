@@ -26,5 +26,6 @@ public class Main {
         System.out.println("Vizinhos do Vértice 1: "+ shy.StringVizinhosDoVerticeDeIndice(1));
         entrada.close();
         System.out.println("Menor distancia entre 1 e 2: "+ shy.MenorCaminhoDijkstra(1, 3));
+
     }
 }

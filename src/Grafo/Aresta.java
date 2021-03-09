@@ -2,7 +2,7 @@ package Grafo;
 
 import java.util.*;
 
-public class Aresta implements Comparator<Aresta> {
+class Aresta implements Comparator<Aresta> {
     // O peso default é 1
     float peso = 1;
     Vertice verticeAlvo;

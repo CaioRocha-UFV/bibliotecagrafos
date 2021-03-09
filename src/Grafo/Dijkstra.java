@@ -1,9 +1,8 @@
-package Algoritmos;
+package Grafo;
 
 import java.util.*;
-import Grafo.*;
 
-public class Dijkstra {
+class Dijkstra {
     
     // Vetor onde cada posição representa a distância do vértice atual ao inicial
     // Os indexes deste vetor se associam aos indices do vértices do Grafo
