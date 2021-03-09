@@ -1,6 +1,8 @@
+package Main;
 
 import java.io.IOException;
 import java.util.Scanner;
+import Grafo.*;
 
 public class Main {
    
@@ -21,7 +23,8 @@ public class Main {
         System.out.println("Tamanho: " + shy.Tamanho());
         System.out.println("Ordem: "+ shy.Ordem());
         System.out.println("Grau do Vértice 1: "+ shy.GrauDoVerticeDeIndex(1));
-        System.out.println("Vizinhos do Vértice 1: "+ shy.VizinhosDoVerticeDeIndice(1));
+        System.out.println("Vizinhos do Vértice 1: "+ shy.StringVizinhosDoVerticeDeIndice(1));
         entrada.close();
+        System.out.println("Menor distancia entre 1 e 2: "+ shy.MenorCaminhoDijkstra(1, 3));
     }
 }

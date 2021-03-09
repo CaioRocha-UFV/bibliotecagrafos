@@ -1,13 +1,14 @@
+package Grafo;
 
-
-//import java.util.Scanner;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
-class Grafo{
+import Algoritmos.Dijkstra;
+
+public class Grafo{
     private int numeroDeVertices;
     private ArrayList<Vertice> grafo;
 
@@ -24,8 +25,8 @@ class Grafo{
     }
     
     // Função protótipo para exibir os vértices no grafo e seus vizinhos
-    void ExibirGrafo(){
-        
+    public void ExibirGrafo(){
+
         for (Vertice vertice : grafo){
             System.out.print("Vertice: " + vertice.index);
             System.out.print(" Vizinhos: ");
@@ -112,6 +113,14 @@ class Grafo{
 
     // Função EXTERNA
     // Recebe:
+    // Ação: 
+    // Retorna: Uma ArrayList de Vertices
+    public ArrayList<Vertice> Vertices(){
+        return grafo;
+    }
+
+    // Função EXTERNA
+    // Recebe:
     // Ação: Conta o total de arestas e divide por dois
     // Retorna: O tamanho do grafo
     public int Tamanho() {
@@ -128,7 +137,20 @@ class Grafo{
     // Recebe: Um grafo e um Índice
     // Ação: Busca um vértice pelo índice no grafo dado
     // Retorna: Vértice encontrado
-    private Vertice VerticeDeIndex(ArrayList<Vertice> grafo, int index){
+    private static Vertice VerticeNoGrafoDeIndex(ArrayList<Vertice> grafo, int index){
+        for (Vertice vertice : grafo){
+            if (vertice.index == index){
+                return vertice;
+            }
+        }
+        return null;
+    }
+
+    // Função INTERNA
+    // Recebe: Um Índice
+    // Ação: Busca um vértice pelo índice no grafo interno
+    // Retorna: Vértice encontrado
+    private Vertice VerticeDeIndex(int index){
         for (Vertice vertice : grafo){
             if (vertice.index == index){
                 return vertice;
@@ -145,7 +167,7 @@ class Grafo{
     // Caso exista retorna 1 e a posição do objeto na lista
     private int[] ExisteVerticeComIndex ( ArrayList<Vertice> adjList, int index){
         int[] existenciaEPosicao = {0, -1};
-        Vertice vertice = VerticeDeIndex(adjList, index);
+        Vertice vertice = VerticeNoGrafoDeIndex(adjList, index);
         if (vertice != null){
             existenciaEPosicao[0] = 1;
             existenciaEPosicao[1] = adjList.indexOf(vertice);
@@ -202,7 +224,7 @@ class Grafo{
     // Ação: Busca pelo vértice através de seu index e acessa o grau
     // Retorna: Grau do Vértice
     public int GrauDoVerticeDeIndex(int index){
-        int grau = VerticeDeIndex(this.grafo , index).Grau();
+        int grau = VerticeDeIndex(index).Grau();
         return grau;
     }
 
@@ -210,114 +232,33 @@ class Grafo{
     // Recebe: Index do vértice
     // Ação: Busca pelos vizinhso do vértice através de seu index
     // Retorna: Uma string {1, 2, 3} de vizinhos
-    public String VizinhosDoVerticeDeIndice(int index){
-        Vertice vertice = VerticeDeIndex(this.grafo , index);
+    public String StringVizinhosDoVerticeDeIndice(int index){
+        Vertice vertice = VerticeDeIndex(index);
         String vizinhos = vertice.StringDeVizinhos();
         return vizinhos;
     }
 
-    //----------------------------------------------------------------------------------------------------------
-    //     CLASSES INTERNAS - VÉRTICE E ARESTA
-    //----------------------------------------------------------------------------------------------------------
-    // Classe INTERNA
-    // Propriedades: (int)Index, (boolean)Marcado, (Array de Arestas)Vizinhos
-    class Vertice {
-        int index;  
-        boolean marcado;
-        ArrayList<Aresta> vizinhos;
-
-        // Construtor a partir de um index
-        // Inicia a Array de vizinhos e desmarcado
-        public Vertice (int index){
-            this.index = index;
-            marcado = false;
-            vizinhos = new ArrayList<Aresta>();
-        }
-
-        public String StringDeVizinhos(){
-            if (NumeroDeVizinhos() > 0){
-                String vizinhosString = "{";
-
-                for (Aresta aresta : vizinhos){
-                    int index = aresta.VerticeAlvo().index;
-                    vizinhosString = vizinhosString + Integer.toString(index) + ", ";
-                }
-                
-
-                vizinhosString = vizinhosString.substring(0, vizinhosString.length() - 2) + "}";
-                return vizinhosString;
-            }
-            return null;
-        }
-
-        // Função EXTERNA
-        // Recebe:
-        // Ação: Conta o número de vizinhos
-        // Retorna: Número de vizinhos
-        public int NumeroDeVizinhos(){
-            if (vizinhos != null)
-                return vizinhos.size();
-            return -1;
-        }
-
-        // Função INTERNA
-        // Recebe:
-        // Ação: Conta o número de vizinhos
-        // Retorna: Grau do vértice
-        public int Grau(){
-            return NumeroDeVizinhos();
-        }
-
-        // Função INTERNA
-        // Recebe:
-        // Ação: Marca um vértice
-        // Retorna: void
-        public void Marcar(){
-            if (!marcado){
-                marcado = true;
-            }
-        }
-
-        // Função INTERNA
-        // Recebe:
-        // Ação: Desarca um vértice
-        // Retorna: void
-        public void Desmarcar(){
-            if (marcado){
-                marcado = false;
-            }
-        }
-
-        // Função INTERNA
-        // Recebe:
-        // Ação: Acessa o atributo marcado
-        // Retorna: Boolean se está marcado
-        public boolean Marcado(){
-            return marcado;
-        }
+    // Pseudocode from https://www.softwaretestinghelp.com/dijkstras-algorithm-in-java/
+    public float MenorCaminhoDijkstra(int inicial, int fim){
+        Vertice vInicio = VerticeDeIndex(inicial);
+        //Vertice vFinal = VerticeDeIndex(fim);
+        Dijkstra dijkstra = new Dijkstra(this);
+        dijkstra.DistanciasAPartirDoVertice(vInicio);
+        return dijkstra.distancias[fim];
     }
 
-    // Classe INTERNA
-    // Propriedades: (float)Peso, (Vertice)VerticeAlvo
-    class Aresta {
-        // O peso default é 1
-        float peso = 1;
-        Vertice verticeAlvo;
+    public void VerticesDoMenorCaminhoDijkstra(int inicial, int fim){
 
-        // Construtor a partir de um peso e um vértice alvo
-        public Aresta(float peso, Grafo.Vertice verticeAlvo) {
-            this.peso = peso;
-            this.verticeAlvo = verticeAlvo;
-        }
-
-        // Acessa peso
-        public float Peso(){
-            return peso;
-        }
-
-        // Retorna o Vértice Alvo
-        public Vertice VerticeAlvo(){
-            return verticeAlvo;
-        }
     }
+
+
+    // Função INTERNA
+    // Recebe:
+    // Ação: Itinera por todos os vertices desmarcando-os
+    // Retorna: void
+    private void DesmarcarTodosOsVertices(){
+        for (Vertice vertice : grafo){
+            vertice.Desmarcar();
+        }
+    } 
 }
