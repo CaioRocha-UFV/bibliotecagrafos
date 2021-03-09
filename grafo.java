@@ -8,11 +8,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 class Grafo{
-
     private int numeroDeVertices;
     private ArrayList<Vertice> grafo;
 
-    void CriarGrafo(String fileName) throws FileNotFoundException, IOException{
+
+    // Função EXTERNA
+    // Recebe: nome do arquivo
+    // Ação: Gera um grafo com os dados do arquivo
+    // Retorna: void
+    public void CriarGrafo(String fileName) throws FileNotFoundException, IOException{
 
         grafo = new ArrayList<Vertice>();
         grafo = LeituraDeArquivo(fileName);
@@ -32,7 +36,11 @@ class Grafo{
             System.out.println("");
         }
     }
-    // Le um arquivo .txt e retorna uma matriz (?) ou uma lista de adjacencia
+
+    // Função INTERNA
+    // Recebe: nome do arquivo
+    // Ação: Lê o arquivo e criar os devidos vértices e arestas
+    // Retorna: Uma array de Vertices (O grafo)
     private ArrayList<Vertice> LeituraDeArquivo (String fileName)  throws FileNotFoundException, IOException{
         BufferedReader reader = null;
 
@@ -102,99 +110,210 @@ class Grafo{
         }
     }
 
-    //Contar as arestas, basta dividir por 2, já que a aresta
-    //sempre passa por 2 vertices
-    public int getTamanho() {
+    // Função EXTERNA
+    // Recebe:
+    // Ação: Conta o total de arestas e divide por dois
+    // Retorna: O tamanho do grafo
+    public int Tamanho() {
         int numArestas = 0;
 
         for(Vertice vertice: grafo){
-            for(Aresta aresta: vertice.vizinhos){
-                numArestas += 1;
-            }
+            numArestas += vertice.Grau();
         }
 
         return numArestas/2;
     }
 
-    // Verifica se existe vértice com determinado índice
-    // Retorna vetor informando a existência e a posição onde está o vértice com aquele índice
-    // TODO
-    public int[] ExisteVerticeComIndex ( ArrayList<Vertice> adjList, int index){
-        // Caso não exista o vértice retorna 0 e posição -1
-        // Caso exista retorna 1 e a posição do objeto na lista
-        int[] ExistenciaEPosicao = {0, -1};
-        for (Vertice vert1 : adjList){
-            if (vert1.index == index){
-                ExistenciaEPosicao[0] = 1;
-                ExistenciaEPosicao[1] = adjList.indexOf(vert1);
-                return ExistenciaEPosicao;
+    // Função INTERNA
+    // Recebe: Um grafo e um Índice
+    // Ação: Busca um vértice pelo índice no grafo dado
+    // Retorna: Vértice encontrado
+    private Vertice VerticeDeIndex(ArrayList<Vertice> grafo, int index){
+        for (Vertice vertice : grafo){
+            if (vertice.index == index){
+                return vertice;
             }
         }
-        return ExistenciaEPosicao;
+        return null;
+    }
+    
+    // Função INTERNA
+    // Recebe: Um grafo e um index
+    // Ação: Verifica se existe um vértice com o índice dado
+    // Retorna: Um vetor[2] informando a existência em [0] e a posição em [1] do vértice com o índice dado
+    // Caso não exista o vértice retorna 0 e posição -1
+    // Caso exista retorna 1 e a posição do objeto na lista
+    private int[] ExisteVerticeComIndex ( ArrayList<Vertice> adjList, int index){
+        int[] existenciaEPosicao = {0, -1};
+        Vertice vertice = VerticeDeIndex(adjList, index);
+        if (vertice != null){
+            existenciaEPosicao[0] = 1;
+            existenciaEPosicao[1] = adjList.indexOf(vertice);
+            return existenciaEPosicao;
+        }
+        return existenciaEPosicao;
     }
 
-    // TODO
-    public boolean ExisteArestaEntre(Vertice vertice1, Vertice vertice2){
-        
-        
+    // Função INTERNA
+    // Recebe: Dois vértices
+    // Ação: Verifica se existe uma aresta entre os dois vértices
+    // Retorna: Um bool indicando a existencia de aresta
+    private boolean ExisteArestaEntre(Vertice vertice1, Vertice vertice2){
+        // Para cada aresta do Vertice1
         for (Aresta aresta : vertice1.vizinhos){
-            
             if (aresta.verticeAlvo.equals(vertice2)){
+                // Se o vertice alvo é o Vertice2, retorna
                 return true;
             }
         }
         return false;
     }
 
-    // Cria uma aresta a partir de dois vértices e um peso
-    void CriaAresta(Vertice vertice1, Vertice vertice2, float peso){
-        
-        vertice1.vizinhos.add(new Aresta(peso, vertice2));
-        vertice2.vizinhos.add(new Aresta(peso, vertice1));    
+    // Função INTERNA
+    // Recebe: Dois vértices e um peso
+    // Ação: Cria uma aresta entre os vértices
+    // Retorna: void
+    private void CriaAresta(Vertice vertice1, Vertice vertice2, float peso){
+        // Se não houver uma aresta entre os vértices, cria-a
+        if (ExisteArestaEntre(vertice1, vertice2) == false){
+            vertice1.vizinhos.add(new Aresta(peso, vertice2));
+            vertice2.vizinhos.add(new Aresta(peso, vertice1));
+        }
     }
 
-    // 
+    // Função INTERNA
+    // Recebe:
+    // Ação: Acessa o número de vértices
+    // Retorna: Número de vértices
+    private int NumeroDeVertices(){
+        return numeroDeVertices;
+    }
+
+    // Função EXTERNA
+    // Recebe: 
+    // Ação: Acessa NumeroDeVertices()
+    // Retorna: Número de vértices
+    public int Ordem(){
+        return NumeroDeVertices();
+    }
+
+    // Função EXTERNA
+    // Recebe: Index do vértice
+    // Ação: Busca pelo vértice através de seu index e acessa o grau
+    // Retorna: Grau do Vértice
+    public int GrauDoVerticeDeIndex(int index){
+        int grau = VerticeDeIndex(this.grafo , index).Grau();
+        return grau;
+    }
+
+    public String VizinhosDoVerticeDeIndice(int index){
+        Vertice vertice = VerticeDeIndex(this.grafo , index);
+        String vizinhos = vertice.StringDeVizinhos();
+        return vizinhos;
+    }
+
+    //----------------------------------------------------------------------------------------------------------
+    //     CLASSES INTERNAS - VÉRTICE E ARESTA
+    //----------------------------------------------------------------------------------------------------------
+    // Classe INTERNA
+    // Propriedades: (int)Index, (boolean)Marcado, (Array de Arestas)Vizinhos
     class Vertice {
         int index;  
         boolean marcado;
         ArrayList<Aresta> vizinhos;
 
+        // Construtor a partir de um index
+        // Inicia a Array de vizinhos e desmarcado
         public Vertice (int index){
             this.index = index;
             marcado = false;
             vizinhos = new ArrayList<Aresta>();
         }
 
+        public String StringDeVizinhos(){
+            if (NumeroDeVizinhos() > 0){
+                String vizinhosString = "{";
+
+                for (Aresta aresta : vizinhos){
+                    int index = aresta.VerticeAlvo().index;
+                    vizinhosString = vizinhosString + Integer.toString(index) + ", ";
+                }
+                
+
+                vizinhosString = vizinhosString.substring(0, vizinhosString.length() - 2) + "}";
+                return vizinhosString;
+            }
+            return null;
+        }
+
+        // Função EXTERNA
+        // Recebe:
+        // Ação: Conta o número de vizinhos
+        // Retorna: Número de vizinhos
         public int NumeroDeVizinhos(){
             if (vizinhos != null)
                 return vizinhos.size();
             return -1;
         }
 
+        // Função INTERNA
+        // Recebe:
+        // Ação: Conta o número de vizinhos
+        // Retorna: Grau do vértice
         public int Grau(){
             return NumeroDeVizinhos();
         }
 
-
+        // Função INTERNA
+        // Recebe:
+        // Ação: Marca um vértice
+        // Retorna: void
         public void Marcar(){
             if (!marcado){
                 marcado = true;
             }
         }
 
+        // Função INTERNA
+        // Recebe:
+        // Ação: Desarca um vértice
+        // Retorna: void
+        public void Desmarcar(){
+            if (marcado){
+                marcado = false;
+            }
+        }
+
+        // Função INTERNA
+        // Recebe:
+        // Ação: Acessa o atributo marcado
+        // Retorna: Boolean se está marcado
         public boolean Marcado(){
             return marcado;
         }
     }
 
-    //
+    // Classe INTERNA
+    // Propriedades: (float)Peso, (Vertice)VerticeAlvo
     class Aresta {
-        float peso;
+        // O peso default é 1
+        float peso = 1;
         Vertice verticeAlvo;
 
+        // Construtor a partir de um peso e um vértice alvo
         public Aresta(float peso, Grafo.Vertice verticeAlvo) {
             this.peso = peso;
             this.verticeAlvo = verticeAlvo;
+        }
+
+        // Acessa peso
+        public float Peso(){
+            return peso;
+        }
+
+        // Retorna o Vértice Alvo
+        public Vertice VerticeAlvo(){
+            return verticeAlvo;
         }
     }
 }

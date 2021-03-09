@@ -2,7 +2,7 @@
 import java.io.IOException;
 import java.util.Scanner;
 
-public class main {
+public class Main {
    
     public static void main(String[] args) throws IOException {
     
@@ -18,6 +18,10 @@ public class main {
         
         // Mostra o grafo, seus vértices e quem são seus vizinhos
         shy.ExibirGrafo();
-        System.out.println("Tamanho: " + shy.getTamanho());
+        System.out.println("Tamanho: " + shy.Tamanho());
+        System.out.println("Ordem: "+ shy.Ordem());
+        System.out.println("Grau do Vértice 1: "+ shy.GrauDoVerticeDeIndex(1));
+        System.out.println("Vizinhos do Vértice 1: "+ shy.VizinhosDoVerticeDeIndice(1));
+        entrada.close();
     }
 }
