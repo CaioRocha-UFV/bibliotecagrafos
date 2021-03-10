@@ -70,31 +70,15 @@ public class Grafo{
                 float peso = Float.parseFloat(tokens[2]);
                 Vertice vertice1;
                 Vertice vertice2;
-                int[] retornoFuncao;
 
-                // Pega o retorno da verificação se existe um vértice com aquele índice
-                retornoFuncao = ExisteVerticeComIndex(adjList, index1);
-                // Testa se os vértices ja estão na lista
-                // e adiciona eles caso não estejam
-                if (retornoFuncao[0] == 0){
-                    vertice1 = new Vertice(index1);
-                    adjList.add(vertice1);    
-
-                } else{
-                    vertice1 = adjList.get(retornoFuncao[1]);
-                }
-                
-                retornoFuncao = ExisteVerticeComIndex(adjList, index2);
-                if (retornoFuncao[0] == 0){
-                    vertice2 = new Vertice(index2);
-                    adjList.add(vertice2); 
-                } else{
-                    vertice2 = adjList.get(retornoFuncao[1]);
-                }
+                // Adiciona os vértices na lista
+                vertice1 = AdicionaVertice(adjList, index1);
+                vertice2 = AdicionaVertice(adjList, index2);
            
-                // Testa se aresta já existe
-                if (ExisteArestaEntre(vertice1, vertice2) == false){
-                    CriaAresta(vertice1, vertice2, peso);
+                // Adiciona as arestas
+                if (vertice1.EhvizinhoDe(vertice2) == false){
+                    vertice1.AdicionarVizinho(vertice2, peso);
+                    vertice2.AdicionarVizinho(vertice1, peso);
                 }
             }
             return adjList;
@@ -107,6 +91,66 @@ public class Grafo{
                ex.printStackTrace();
             }
         }
+    }
+
+
+
+    // Função INTERNA
+    // Recebe: Index do vértice
+    // Ação: Adiciona um vértice na lista
+    // Retorna: (true) Caso tudo dê certo
+    //          (false) Caso o vértice já esteja na lista
+    Vertice AdicionaVertice(int newIndex){
+
+        int indexListaDeVertices = 0;
+        for (Vertice vertice : this.grafo){
+            // Testa se o novo vertice ja está na lista
+            if (newIndex == vertice.Index())
+                return vertice;
+
+            // Se o index novo é menor que o do vertice nesta posição
+            // Cria umnovo vertice aqui
+            if (newIndex < vertice.Index()){
+                indexListaDeVertices = grafo.indexOf(vertice);
+                Vertice novoVertice = new Vertice(newIndex);
+
+                this.grafo.add(indexListaDeVertices, novoVertice);
+                return novoVertice;
+            }
+        }
+        // Se chegou aqui, o vertice é adicionado ao final da lista
+        Vertice novoVertice = new Vertice(newIndex);
+        this.grafo.add(novoVertice);
+        return novoVertice;
+    }
+
+    // Função INTERNA
+    // Recebe: Index do vértice
+    // Ação: Adiciona um vértice na lista
+    // Retorna: (true) Caso tudo dê certo
+    //          (false) Caso o vértice já esteja na lista
+    Vertice AdicionaVertice(ArrayList<Vertice> novoGrafo, int newIndex){
+
+        int indexListaDeVertices = 0;
+        for (Vertice vertice : novoGrafo){
+            // Testa se o novo vertice ja está na lista
+            if (newIndex == vertice.Index())
+                return vertice;
+
+            // Se o index novo é menor que o do vertice nesta posição
+            // Cria umnovo vertice aqui
+            if (newIndex < vertice.Index()){
+                indexListaDeVertices = novoGrafo.indexOf(vertice);
+                Vertice novoVertice = new Vertice(newIndex);
+
+                novoGrafo.add(indexListaDeVertices, novoVertice);
+                return novoVertice;
+            }
+        }
+        // Se chegou aqui, o vertice é adicionado ao final da lista
+        Vertice novoVertice = new Vertice(newIndex);
+        novoGrafo.add(novoVertice);
+        return novoVertice;
     }
 
     // Função EXTERNA
@@ -149,56 +193,14 @@ public class Grafo{
     // Ação: Busca um vértice pelo índice no grafo interno
     // Retorna: Vértice encontrado
     private Vertice VerticeDeIndex(int index){
+
         for (Vertice vertice : grafo){
             if (vertice.index == index){
                 return vertice;
             }
         }
+        System.out.println("VERTICE NÃO ENCONTRADO -- Index: "+index);
         return null;
-    }
-    
-    // Função INTERNA
-    // Recebe: Um grafo e um index
-    // Ação: Verifica se existe um vértice com o índice dado
-    // Retorna: Um vetor[2] informando a existência em [0] e a posição em [1] do vértice com o índice dado
-    // Caso não exista o vértice retorna 0 e posição -1
-    // Caso exista retorna 1 e a posição do objeto na lista
-    private int[] ExisteVerticeComIndex ( ArrayList<Vertice> adjList, int index){
-        int[] existenciaEPosicao = {0, -1};
-        Vertice vertice = VerticeNoGrafoDeIndex(adjList, index);
-        if (vertice != null){
-            existenciaEPosicao[0] = 1;
-            existenciaEPosicao[1] = adjList.indexOf(vertice);
-            return existenciaEPosicao;
-        }
-        return existenciaEPosicao;
-    }
-
-    // Função INTERNA
-    // Recebe: Dois vértices
-    // Ação: Verifica se existe uma aresta entre os dois vértices
-    // Retorna: Um bool indicando a existencia de aresta
-    private boolean ExisteArestaEntre(Vertice vertice1, Vertice vertice2){
-        // Para cada aresta do Vertice1
-        for (Aresta aresta : vertice1.vizinhos){
-            if (aresta.verticeAlvo.equals(vertice2)){
-                // Se o vertice alvo é o Vertice2, retorna
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Função INTERNA
-    // Recebe: Dois vértices e um peso
-    // Ação: Cria uma aresta entre os vértices
-    // Retorna: void
-    private void CriaAresta(Vertice vertice1, Vertice vertice2, float peso){
-        // Se não houver uma aresta entre os vértices, cria-a
-        if (ExisteArestaEntre(vertice1, vertice2) == false){
-            vertice1.vizinhos.add(new Aresta(peso, vertice2));
-            vertice2.vizinhos.add(new Aresta(peso, vertice1));
-        }
     }
 
     // Função INTERNA

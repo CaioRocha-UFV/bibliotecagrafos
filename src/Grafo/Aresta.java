@@ -19,12 +19,12 @@ class Aresta implements Comparator<Aresta> {
     }
 
     // Acessa peso
-    public float Peso(){
+    float Peso(){
         return peso;
     }
 
     // Retorna o Vértice Alvo
-    public Vertice VerticeAlvo(){
+    Vertice VerticeAlvo(){
         return verticeAlvo;
     }
 

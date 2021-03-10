@@ -16,22 +16,22 @@ class Vertice {
     }
 
     // Acessa o index
-    public int Index(){
+    int Index(){
         return index;
     }
 
     // Acessa a Array de vizinhos
-    public ArrayList<Aresta> Vizinhos(){
+    ArrayList<Aresta> Vizinhos(){
         return vizinhos;
     }
 
     // Retorna uma string dos vizinhos {1, 2, 3}
-    public String StringDeVizinhos(){
+    String StringDeVizinhos(){
         if (NumeroDeVizinhos() > 0){
             String vizinhosString = "{";
 
             for (Aresta aresta : vizinhos){
-                int index = aresta.VerticeAlvo().index;
+                int index = aresta.VerticeAlvo().Index();
                 vizinhosString = vizinhosString + Integer.toString(index) + ", ";
             }
             
@@ -46,7 +46,7 @@ class Vertice {
     // Recebe:
     // Ação: Conta o número de vizinhos
     // Retorna: Número de vizinhos
-    public int NumeroDeVizinhos(){
+    int NumeroDeVizinhos(){
         if (vizinhos != null)
             return vizinhos.size();
         return -1;
@@ -56,7 +56,7 @@ class Vertice {
     // Recebe:
     // Ação: Conta o número de vizinhos
     // Retorna: Grau do vértice
-    public int Grau(){
+    int Grau(){
         return NumeroDeVizinhos();
     }
 
@@ -64,7 +64,7 @@ class Vertice {
     // Recebe:
     // Ação: Marca um vértice
     // Retorna: void
-    public void Marcar(){
+    void Marcar(){
         if (!marcado){
             marcado = true;
         }
@@ -74,7 +74,7 @@ class Vertice {
     // Recebe:
     // Ação: Desarca um vértice
     // Retorna: void
-    public void Desmarcar(){
+    void Desmarcar(){
         if (marcado){
             marcado = false;
         }
@@ -84,7 +84,43 @@ class Vertice {
     // Recebe:
     // Ação: Acessa o atributo marcado
     // Retorna: Boolean se está marcado
-    public boolean Marcado(){
+    boolean Marcado(){
         return marcado;
+    }
+
+    // Função INTERNA
+    // Recebe: Dois vértices e um peso
+    // Ação: Cria uma aresta entre os vértices
+    // Retorna: void
+    void AdicionarVizinho(Vertice vertice2, float peso){
+        // Se não houver uma aresta entre os vértices, cria-a
+        if (this.EhvizinhoDe(vertice2) == false){
+            int indexListaDeVizinhos = 0;
+
+            for (Aresta vizinho : this.vizinhos){
+                if (vertice2.Index() < vizinho.VerticeAlvo().Index()){
+                    indexListaDeVizinhos = this.vizinhos.indexOf(vizinho);
+                    this.vizinhos.add(indexListaDeVizinhos , new Aresta(peso, vertice2));
+                    return;
+                }
+            }
+
+            this.vizinhos.add(new Aresta(peso, vertice2));
+        }
+    }
+
+    // Função INTERNA
+    // Recebe: Dois vértices
+    // Ação: Verifica se existe uma aresta entre os dois vértices
+    // Retorna: Um bool indicando a existencia de aresta
+    boolean EhvizinhoDe(Vertice vertice2){
+        // Para cada aresta do Vertice1
+        for (Aresta aresta : this.vizinhos){
+            if (aresta.verticeAlvo.equals(vertice2)){
+                // Se o vertice alvo é o Vertice2, retorna
+                return true;
+            }
+        }
+        return false;
     }
 }
