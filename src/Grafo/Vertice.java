@@ -109,9 +109,8 @@ class Vertice {
         }
     }
 
-    // Função INTERNA
-    // Recebe: Dois vértices
-    // Ação: Verifica se existe uma aresta entre os dois vértices
+    // Recebe: Umv értice
+    // Ação: Verifica se existe uma aresta entre este e um vértice dado
     // Retorna: Um bool indicando a existencia de aresta
     boolean EhvizinhoDe(Vertice vertice2){
         // Para cada aresta do Vertice1
@@ -122,5 +121,25 @@ class Vertice {
             }
         }
         return false;
+    }
+
+
+    // Recebe: Dois vértices
+    // Ação: Encontra uma aresta buscada
+    // Retorna: A aresta buscada
+    Aresta ArestaCom(Vertice vertice2){
+        
+        if (vertice2.equals(this)){
+            return (new Aresta(0, this));
+        }
+        
+        // Para cada aresta do Vertice1
+        for (Aresta aresta : this.vizinhos){
+            if (aresta.verticeAlvo.equals(vertice2)){
+                // Encontra a aresta buscada
+                return aresta;
+            }
+        }
+        return null;
     }
 }

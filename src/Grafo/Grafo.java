@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Grafo{
     private int numeroDeVertices;
@@ -251,6 +252,42 @@ public class Grafo{
 
     }
 
+    public void MenorCaminhoAStar(int inicial, int fim){
+        Vertice vInicio = VerticeDeIndex(inicial);
+        Vertice vFinal = VerticeDeIndex(fim);
+
+        Astar aStar = new Astar();
+
+        List<Vertice> rota = aStar.EncontrarCaminho(vInicio, vFinal);
+        System.out.println(rota.stream().map(Vertice::Index).collect(Collectors.toList()));
+    }
+
+    public void BuscaEmProfundidade(int index){
+
+        Vertice vertice = VerticeDeIndex(index);
+        BuscaDFS(vertice);
+    }
+
+    private void BuscaDFS(Vertice vertice){
+        // Cria um vetor que acompanhará os vértices já visitados
+        boolean visitados[] = new boolean[NumeroDeVertices()];
+
+        // Chamada da função recursiva que fará a busca
+        BuscaRecursivaDFS(vertice, visitados);
+    }
+
+    private void BuscaRecursivaDFS(Vertice vertice, boolean visitados[]){
+        // Marca o vertice atual como visitado
+        visitados[vertice.Index()-1] = true;
+        System.out.println(vertice.Index() + "-> ");
+
+        // Recursividade em todos os vizinhos
+        for (Aresta vizinho : vertice.Vizinhos()){
+            if (visitados[vizinho.VerticeAlvo().Index()-1] == false){
+                BuscaRecursivaDFS(vizinho.VerticeAlvo(), visitados);
+            }
+        }
+    }
 
     // Função INTERNA
     // Recebe:
@@ -261,4 +298,5 @@ public class Grafo{
             vertice.Desmarcar();
         }
     } 
+
 }
