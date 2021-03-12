@@ -13,8 +13,9 @@ public class Main {
         Scanner entrada = new Scanner(System.in);
         
         System.out.print("Nome do arquivo: ");
-        arquivo = entrada.next();
-        
+        //arquivo = entrada.next();
+        arquivo = "oks.txt";
+
         // Passa o nome do arquivo e cria o grafo daqueles dados
         shy.CriarGrafo(arquivo);
         

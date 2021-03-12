@@ -40,16 +40,23 @@ class Dijkstra {
         }
 
         // Adiciona a aresta inicial à lista de prioridade com peso 0
-        pqueue.add(new Aresta(0, verticeInicial));
+        pqueue.add(new Aresta(0, verticeInicial, verticeInicial));
 
         // Distancia ao vertice inicial = 0
         distancias[verticeInicial.Index()] = 0;
 
         // Visita os vértices
         while (visitados.size() != totalDeVertices){
+            
+
+            if (pqueue.isEmpty()){
+                System.out.println("DIJKSTRA: Vértice Desconexo! -> Fim da busca para esta componente conexa");
+                break;
+            }
 
             // Remove o vértice de menor distancia da lista de prioridades
             Vertice menorV = pqueue.remove().VerticeAlvo();
+            
 
             // Adiciona o vértice cuja distancia já foi visitada
             visitados.add(menorV);
@@ -78,7 +85,7 @@ class Dijkstra {
                 }
 
                 // Adiciona a aresta atual na lista de prioridade
-                pqueue.add(new Aresta(aresta.Peso(), vizinho));
+                pqueue.add(new Aresta(aresta.Peso(),vertice, vizinho));
             }
         }
 

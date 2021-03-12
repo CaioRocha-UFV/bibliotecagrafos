@@ -5,12 +5,14 @@ import java.util.*;
 class Aresta implements Comparator<Aresta> {
     // O peso default é 1
     float peso = 1;
+    Vertice verticeOrigem;
     Vertice verticeAlvo;
 
     // Construtor a partir de um peso e um vértice alvo
-    public Aresta(float peso, Vertice verticeAlvo) {
+    public Aresta(float peso, Vertice verticeOrigem , Vertice verticeAlvo) {
         this.peso = peso;
         this.verticeAlvo = verticeAlvo;
+        this.verticeOrigem = verticeOrigem;
     }
 
     // Construtor vazio -> Usado no Dijkstra
@@ -28,6 +30,10 @@ class Aresta implements Comparator<Aresta> {
         return verticeAlvo;
     }
 
+    Vertice VerticeDeOrigem() {
+        return verticeOrigem;
+    }
+
     @Override
     public int compare(Aresta aresta1, Aresta aresta2){
         if (aresta1.peso < aresta2.peso)
@@ -35,5 +41,9 @@ class Aresta implements Comparator<Aresta> {
         if (aresta1.peso > aresta2.peso)
             return 1;
         return 0;
+    }
+
+    boolean EhEquivalenteA(Aresta aresta2){
+        return (aresta2.VerticeAlvo().equals(this.VerticeDeOrigem()) && aresta2.VerticeDeOrigem().equals(this.VerticeAlvo()));
     }
 }
