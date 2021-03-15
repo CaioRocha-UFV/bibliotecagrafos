@@ -61,34 +61,6 @@ class Vertice {
     }
 
     // Função INTERNA
-    // Recebe:
-    // Ação: Marca um vértice
-    // Retorna: void
-    void Marcar(){
-        if (!marcado){
-            marcado = true;
-        }
-    }
-
-    // Função INTERNA
-    // Recebe:
-    // Ação: Desarca um vértice
-    // Retorna: void
-    void Desmarcar(){
-        if (marcado){
-            marcado = false;
-        }
-    }
-
-    // Função INTERNA
-    // Recebe:
-    // Ação: Acessa o atributo marcado
-    // Retorna: Boolean se está marcado
-    boolean Marcado(){
-        return marcado;
-    }
-
-    // Função INTERNA
     // Recebe: Dois vértices e um peso
     // Ação: Cria uma aresta entre os vértices
     // Retorna: void
@@ -110,7 +82,7 @@ class Vertice {
         }
     }
 
-    // Recebe: Umv értice
+    // Recebe: Um értice
     // Ação: Verifica se existe uma aresta entre este e um vértice dado
     // Retorna: Um bool indicando a existencia de aresta
     boolean EhvizinhoDe(Vertice vertice2){
@@ -125,7 +97,7 @@ class Vertice {
     }
 
 
-    // Recebe: Dois vértices
+    // Recebe: Um vértices
     // Ação: Encontra uma aresta buscada
     // Retorna: A aresta buscada
     Aresta ArestaCom(Vertice vertice2){
@@ -142,5 +114,18 @@ class Vertice {
             }
         }
         return null;
+    }
+
+    // Recebe: Um vértices
+    // Ação: Remove o vertice dado dos vizinhos
+    // Retorna: O peso da aresta removida
+    public float RemoveVizinho(Vertice v){
+        for (Aresta aresta : vizinhos){
+            if (aresta.VerticeAlvo() == v){
+                vizinhos.remove(aresta);
+                return aresta.Peso();
+            }
+        }
+        return Float.NaN;
     }
 }

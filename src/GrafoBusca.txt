@@ -1,0 +1,31 @@
+---------------------------------------------
+|        TRABALHO PRÁTICO 1 - CCF 331        |
+---------------------------------------------
+>> Dados sobre o Grafo analisado:
+
+Ordem do Grafo: 11
+Tamanho do Grafo: 12
+
+Número de componentes conexas: 3
+
+COMPONENTE 01
+1 --> 2
+2 --> 5
+5 --> 1 (RETORNO)
+5 --> 3
+3 --> 4
+4 --> 5 (RETORNO)
+Número de vértices no componente: 5
+
+COMPONENTE 11
+6 --> 7
+7 --> 8
+8 --> 6 (RETORNO)
+7 --> 11
+11 --> 6 (RETORNO)
+Número de vértices no componente: 4
+
+COMPONENTE 21
+9 --> 10
+Número de vértices no componente: 2
+

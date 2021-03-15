@@ -7,7 +7,6 @@ class Dijkstra {
     // Vetor onde cada posição representa a distância do vértice atual ao inicial
     // Os indexes deste vetor se associam aos indices do vértices do Grafo
     public float distancias[];
-    Vertice caminho[];
     Set<Vertice> visitados;
     PriorityQueue<Aresta> pqueue;
 
@@ -21,14 +20,39 @@ class Dijkstra {
         this.grafo = grafo;
 
         verticesDoGrafo = grafo.Vertices();
-        totalDeVertices = verticesDoGrafo.size();
+        totalDeVertices = verticesDoGrafo.get(verticesDoGrafo.size()-1).Index()+1;
+    
 
         distancias = new float[totalDeVertices+1];
         visitados = new HashSet<Vertice>();
         pqueue = new PriorityQueue<Aresta>(totalDeVertices, new Aresta());
     }
 
+    public Stack<Vertice> CaminhoEntre(Vertice vInicial, Vertice vFinal){
+        
+        if (distancias[vFinal.Index()] == Integer.MAX_VALUE){
+            Stack<Vertice> caminho = new Stack<Vertice>();
+            caminho.push(vInicial);
+            return caminho;
+        }
+        Vertice currVertice = vFinal;
 
+        Stack<Vertice> caminho = new Stack<Vertice>();
+
+        while (currVertice != vInicial){
+            caminho.push(currVertice);
+
+            for (Aresta vizinho : currVertice.Vizinhos()){
+                if (distancias[vizinho.VerticeAlvo().Index()] + vizinho.Peso() == distancias[currVertice.Index()]){
+                    currVertice = vizinho.VerticeAlvo();
+                    break;
+                }
+            }
+        }
+        caminho.push(currVertice);
+
+        return caminho;
+    }
 
     // Gera e armazena o vetor de distancias a partir de um vértice dado
     public void DistanciasAPartirDoVertice(Vertice verticeInicial){
@@ -47,8 +71,6 @@ class Dijkstra {
 
         // Visita os vértices
         while (visitados.size() != totalDeVertices){
-            
-
             if (pqueue.isEmpty()){
                 System.out.println("DIJKSTRA: Vértice Desconexo! -> Fim da busca para esta componente conexa");
                 break;
