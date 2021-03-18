@@ -64,22 +64,24 @@ class Vertice {
     // Recebe: Dois vértices e um peso
     // Ação: Cria uma aresta entre os vértices
     // Retorna: void
-    void AdicionarVizinho(Vertice vertice2, float peso){
+    Aresta AdicionarVizinho(Vertice vertice2, float peso){
         // Se não houver uma aresta entre os vértices
         if (this.EhvizinhoDe(vertice2) == false){
-
+            Aresta novoVizinho = new Aresta(peso, this, vertice2);
             int indexListaDeVizinhos = 0;
             // Adiciona a aresta respeitando a inserção ordenada
             for (Aresta vizinho : this.vizinhos){
                 if (vertice2.Index() < vizinho.VerticeAlvo().Index()){
                     indexListaDeVizinhos = this.vizinhos.indexOf(vizinho);
-                    this.vizinhos.add(indexListaDeVizinhos , new Aresta(peso, this, vertice2));
-                    return;
+                    this.vizinhos.add(indexListaDeVizinhos , novoVizinho);
+                    return novoVizinho;
                 }
             }
             // Caso o index do vértice alvo seja maior que de todos os vizinhos  
-            this.vizinhos.add(new Aresta(peso, this, vertice2));
+            this.vizinhos.add(novoVizinho);
+            return novoVizinho;
         }
+        return null;
     }
 
     // Recebe: Um értice

@@ -14,7 +14,7 @@ public class Main {
         
         System.out.print("Nome do arquivo: ");
         //arquivo = entrada.next();
-        arquivo = "grafo3.txt";
+        arquivo = "grafo5 07032021093040.txt";
 
         // Passa o nome do arquivo e cria o grafo daqueles dados
         System.out.println("Comecando a criar o grafo.");
@@ -23,6 +23,6 @@ public class Main {
         System.out.println("Ordem o grafo: " + shy.Ordem());
         System.out.println("Tamanho grafo: " + shy.Tamanho());
         shy.GerarArquivoBuscaEArestasRetorno();
-
+        entrada.close();
     }
 }

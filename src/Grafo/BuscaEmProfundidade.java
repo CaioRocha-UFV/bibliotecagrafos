@@ -4,24 +4,6 @@ import java.util.*;
 
 public class BuscaEmProfundidade {
 
-    /*private static void PrintBuscaEmProfundidade(ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas){
-        int indexCompConex = 0;
-
-        // Print do caminho feito
-        System.out.print("\n");
-        for (LinkedHashMap<Aresta, Boolean> componenteConex : componentesConexas){
-            indexCompConex++;
-            System.out.print("\n COMPONENTE CONEXA "+ indexCompConex + "\n");
-
-            for (Aresta arest : componenteConex.keySet()){
-                    System.out.print(arest.VerticeDeOrigem().Index() + " --> "+ arest.VerticeAlvo().Index());
-                if (componenteConex.get(arest) == true)
-                    System.out.print(" (RETORNO)");
-                System.out.print("\n");
-            }
-        }
-    }*/
-
     // Função INTERNA
     // Recebe: Um vértice e o grafo
     // Ação: Explora um grafo componente por componentes através da Busca em Profundidade
@@ -32,28 +14,33 @@ public class BuscaEmProfundidade {
     //                     - false -> É uma aresta de caminho
     public static ArrayList<LinkedHashMap<Aresta, Boolean>> Explorar(Vertice vertice, ArrayList<Vertice> grafo){
 
-        ArrayList<Vertice> verticesNoGrafo = new ArrayList<Vertice>(grafo);
+        Stack<Vertice> verticesNaoExplorados = new Stack<Vertice>();
+        verticesNaoExplorados.addAll(grafo);
+
         ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = new ArrayList<>();
 
+        System.out.println("Início da BUSCA EM PROFUNDIDADE");
         // Aplica a busca em um primeiro componente conexo que contém o vertice dado
         ParVertArest novaComponenteConexa = BuscaDFS(vertice);
         for (Vertice verticeExplorado : novaComponenteConexa.getVertices()){
-            verticesNoGrafo.remove(verticeExplorado);
+            verticesNaoExplorados.remove(verticeExplorado);
         }
         componentesConexas.add(novaComponenteConexa.getArestas());
+        System.out.println("DFS: Primeiro Componente percorrido");
 
         // Explora o resto do Grafo caso este seja desconexo
-        while (verticesNoGrafo.size() > 0){
+        while (verticesNaoExplorados.size() > 0){
 
-            novaComponenteConexa = BuscaDFS(verticesNoGrafo.remove(0));
+            novaComponenteConexa = BuscaDFS(verticesNaoExplorados.pop());
             
             for (Vertice verticeExplorado : novaComponenteConexa.getVertices()){
-                verticesNoGrafo.remove(verticeExplorado);
+                verticesNaoExplorados.remove(verticeExplorado);
             }
 
             componentesConexas.add(novaComponenteConexa.getArestas());
+            System.out.println("DFS: Componente " + componentesConexas.indexOf(novaComponenteConexa.getArestas()) + " percorrido");
         }
-
+        System.out.println("FIM da BUSCA EM PROFUNDIDADE");
         // Retorna o conjunto de componentes conexas
         return componentesConexas;
     }
@@ -70,7 +57,7 @@ public class BuscaEmProfundidade {
         //                          - Armazenar a ordem de entrada de cada vértice
         //                          - Armazenas o caminho feito na ordem em que foi feito
         //                          - Armazenar as arestas de retorno e o momento em que foram encontradas
-        ArrayList<Vertice> verticesVisitados = new ArrayList<Vertice>();
+        HashSet<Vertice> verticesVisitados = new HashSet<Vertice>();
         LinkedHashMap<Aresta, Boolean> arestasVisitadas = new LinkedHashMap<Aresta, Boolean>();
 
         // Com o intuito de armazenar ambas estruturas e manter o aspecto recursivo,
@@ -87,8 +74,7 @@ public class BuscaEmProfundidade {
     }
 
     private static ParVertArest BuscaRecursivaDFS(Vertice vertice, ParVertArest retorno){
-        // 
-        ArrayList<Vertice> verticesVisitados = retorno.getVertices();
+        HashSet<Vertice> verticesVisitados = retorno.getVertices();
         LinkedHashMap<Aresta, Boolean> arestasVisitadas = retorno.getArestas();
 
         // Marca o vertice atual (Alvo desta aresta) como visitado
@@ -129,23 +115,25 @@ public class BuscaEmProfundidade {
 
     private static ParVertArest BuscaIterativaDFS(Vertice vertice, ParVertArest retorno){
         
-        ArrayList<Vertice> verticesVisitados = retorno.getVertices();
+        HashSet<Vertice> verticesVisitados = retorno.getVertices();
         LinkedHashMap<Aresta, Boolean> arestasVisitadas = retorno.getArestas();
+
+        // variaveis internas
         Stack<Vertice> pilhaVertices = new Stack<Vertice>();
         Stack<Aresta> pilhaArestas = new Stack<Aresta>();
         Vertice vertTiradoDaPilha = new Vertice(0);
         Aresta vizinho = new Aresta();
         int i;
         
-        // Coloca o vartice por onde se vai iniciar a busca na pilha
+        // Coloca o vértice por onde se vai iniciar a busca na pilha
         pilhaVertices.push(vertice);
         
+
         while (pilhaVertices.empty() == false || pilhaArestas.empty() == false){
            
             // Caso a pilha de vertices nao esteja vazia, pega o ultimo valor inserido e retira ele da pilha
             if (pilhaVertices.empty() == false){
-                vertTiradoDaPilha = pilhaVertices.peek();
-                pilhaVertices.pop();
+                vertTiradoDaPilha = pilhaVertices.pop();
             }
             
             // Verifica se o vertice tirado da pilha ja nao foi visitado.
@@ -154,7 +142,7 @@ public class BuscaEmProfundidade {
                
                 // Marca o vertice atual (Alvo desta aresta) como visitado
                 verticesVisitados.add(vertTiradoDaPilha);
-                retorno.setVertices(verticesVisitados);
+                //retorno.setVertices(verticesVisitados);
             
                 // Pega a lista de vizinhos do vertice e adiciona na pilha a partir do ultimo para que o primeiro
                 // fique no topo.
@@ -169,26 +157,26 @@ public class BuscaEmProfundidade {
             }
           
 
-            // Caso a pilha de arestas noa esteja vazia, pega um vizinho do vertice e retira da pilha
+            // Caso a pilha de arestas não esteja vazia, pega um vizinho do vertice e retira da pilha
             if (pilhaArestas.empty() == false){
-                vizinho = pilhaArestas.peek();
-                pilhaArestas.pop();
+                vizinho = pilhaArestas.pop();
             }
             
 
             if (verticesVisitados.contains(vizinho.VerticeAlvo()) == false){
                 // Visita
                 arestasVisitadas.put(vizinho, false);
-                retorno.setArestas(arestasVisitadas);
+                //retorno.setArestas(arestasVisitadas);
                 
                 // Coloca o vertice na pilha para que seus vizinhos possam ser verificados
                 pilhaVertices.push(vizinho.VerticeAlvo());
 
             } 
-            else if (verticesVisitados.contains(vizinho.VerticeAlvo()) == true){ 
+            else {
                 // Caso ja tenha sido visitado
                 // E se for uma aresta de retorno não armazenada
                 // E não Explorada
+                /*
                 boolean flagExplored = false;
                 for (Aresta aresta : arestasVisitadas.keySet()){
                     if (aresta.EhEquivalenteA(vizinho) || aresta.equals(vizinho)){
@@ -198,26 +186,33 @@ public class BuscaEmProfundidade {
                 if (flagExplored == false){
                     // Armazena e explora a aresta
                     arestasVisitadas.put(vizinho, true);
-                    retorno.setArestas(arestasVisitadas);
+                    //retorno.setArestas(arestasVisitadas);
+                }*/
+                if (arestasVisitadas.containsKey(vizinho) == false){
+                    if (arestasVisitadas.containsKey(vizinho.getEquivalente()) == false){
+                        arestasVisitadas.put(vizinho, true);
+                    }
                 }
             }
         }
+        retorno.setVertices(verticesVisitados);
+        retorno.setArestas(arestasVisitadas);
         return retorno;
     }
 }
 
 
 class ParVertArest{
-    ArrayList<Vertice> vertices;
+    HashSet<Vertice> vertices;
     LinkedHashMap<Aresta, Boolean> arestas;
-    public ParVertArest(ArrayList<Vertice> vertices, LinkedHashMap<Aresta, Boolean> arestas) {
+    public ParVertArest(HashSet<Vertice> vertices, LinkedHashMap<Aresta, Boolean> arestas) {
         this.vertices = vertices;
         this.arestas = arestas;
     }
-    public ArrayList<Vertice> getVertices() {
+    public HashSet<Vertice> getVertices() {
         return vertices;
     }
-    public void setVertices(ArrayList<Vertice> vertices) {
+    public void setVertices(HashSet<Vertice> vertices) {
         this.vertices = vertices;
     }
     public LinkedHashMap<Aresta, Boolean> getArestas() {

@@ -77,11 +77,14 @@ public class Grafo{
                 vertice1 = AdicionaVertice(adjList, index1);
                 vertice2 = AdicionaVertice(adjList, index2);
            
-                // Adiciona as arestas
                 if (vertice1.EhvizinhoDe(vertice2) == false){
-                    vertice1.AdicionarVizinho(vertice2, peso);
-                    vertice2.AdicionarVizinho(vertice1, peso);
+                    // Adiciona as arestas
+                    Aresta arest1 = vertice1.AdicionarVizinho(vertice2, peso);
+                    Aresta arest2 = vertice2.AdicionarVizinho(vertice1, peso);
+                    arest1.setEquivalente(arest2);
+                    arest2.setEquivalente(arest1);
                 }
+
             }
             return adjList;
             
@@ -377,9 +380,9 @@ public class Grafo{
         return componentesConexas.size();
     }
 
-    public boolean EhArticulacao(int index){
+    public boolean EhArticulacao(int index, int conexasInicial){
         // Armazena o numero de componentes conexas inicial
-        int numConexasInicial = NumeroDeComponentesConexas();
+        int numConexasInicial = conexasInicial;
         int numConexasFinal = 0;
 
         // Remove o vertice
@@ -406,13 +409,13 @@ public class Grafo{
 
     }
 
-    public boolean EhPonte(int index1, int index2){
+    public boolean EhPonte(int index1, int index2, int conexasInicial){
         if (VerticeDeIndex(index1).EhvizinhoDe(VerticeDeIndex(index2)) == false){
             return false;
         }
 
         // Armazena o numero de componentes conexas inicial
-        int numConexasInicial = NumeroDeComponentesConexas();
+        int numConexasInicial = conexasInicial;
         int numConexasFinal = 0;
 
         // Armazena os devidos vertices e ao peso
@@ -440,6 +443,8 @@ public class Grafo{
     public void GerarArquivoBuscaEArestasRetorno() throws IOException {
         // BUSCA EM PROFUNDIDADE
         ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade.Explorar(VerticeDeIndex(1) , grafo);
+        int numComponentesConexas = componentesConexas.size();
+        
 
         String nomeArquivo1 = "TesteBuscaIterativa.txt";
         //String nomeArquivo2 = "GrafoArestasRetorno.txt";
@@ -467,13 +472,13 @@ public class Grafo{
         bw1.write("Grau máximo do Grafo: " + GrauMaximo() + "\n\n");
         bw1.write("Número de componentes conexas: " + componentesConexas.size() + "\n");
 
-        if (EhPonte(5, 6))
+        if (EhPonte(5, 6, numComponentesConexas))
             bw1.write("A aresta 5-6 É uma ponte!!\n");
         bw1.write("\n");
 
         bw1.write("> Dados dois vértices, por exemplo: " + verticeDeTeste1 + " e " + verticeDeTeste2 + "\n");
         // Dados do vértice 1
-        if (EhArticulacao(verticeDeTeste1)){
+        if (EhArticulacao(verticeDeTeste1, numComponentesConexas)){
             bw1.write("Vértice "+ verticeDeTeste1 + " É uma articulação!" + "\n");
         } else{
             bw1.write("Vértice "+ verticeDeTeste1 + " NÃO É uma articulação!" + "\n");
@@ -482,7 +487,7 @@ public class Grafo{
         bw1.write("Grau de "+ verticeDeTeste1 + ": "+ VerticeDeIndex(verticeDeTeste1).Grau() + "\n------------\n");
         
         // Dados do vértice 2
-        if (EhArticulacao(verticeDeTeste2)){
+        if (EhArticulacao(verticeDeTeste2, numComponentesConexas)){
             bw1.write("Vértice "+ verticeDeTeste2 + " É uma articulação!" + "\n");
         } else{
             bw1.write("Vértice "+ verticeDeTeste2 + " NÃO É uma articulação!" + "\n");
@@ -492,8 +497,8 @@ public class Grafo{
         bw1.write("Grau de "+ verticeDeTeste2 + ": " + VerticeDeIndex(verticeDeTeste2).Grau() + "\n------------\n");
         
         // Dijkstra
-        bw1.write("Menor distância entre " + verticeDeTeste1 +  " e "+ verticeDeTeste2 + ": "+ MenorCaminhoDijkstra(verticeDeTeste1, verticeDeTeste2) + "\n");
-        bw1.write("Menor caminho entre " + verticeDeTeste1 +  " e "+ verticeDeTeste2 + ":\n"+ CaminhoDoMenorCaminhoDijkstra(verticeDeTeste1, verticeDeTeste2) + "\n\n");
+        //bw1.write("Menor distância entre " + verticeDeTeste1 +  " e "+ verticeDeTeste2 + ": "+ MenorCaminhoDijkstra(verticeDeTeste1, verticeDeTeste2) + "\n");
+        //bw1.write("Menor caminho entre " + verticeDeTeste1 +  " e "+ verticeDeTeste2 + ":\n"+ CaminhoDoMenorCaminhoDijkstra(verticeDeTeste1, verticeDeTeste2) + "\n\n");
 
         bw1.write("\n____________________________________________" + "\n");
 
@@ -503,7 +508,7 @@ public class Grafo{
         Set<Vertice> verticesNoComponenteRetorno = new HashSet<Vertice>();
         for (LinkedHashMap<Aresta, Boolean> componente : componentesConexas){
             Set<Vertice> verticesNoComponente = new HashSet<Vertice>();
-
+            /*
             bw1.write("COMPONENTE " + (componentesConexas.indexOf(componente)+1) + "\n");
             for (Aresta aresta : componente.keySet()){
                 bw1.write(aresta.VerticeDeOrigem().Index() + " --> "+ aresta.VerticeAlvo().Index());
@@ -520,7 +525,7 @@ public class Grafo{
                 }
                 bw1.write("\n");
             }
-
+            */
             bw1.write("Número de vértices no componente: " + verticesNoComponente.size() + "\n\n");
             bw1.write("----------------------------------------\n");
         }

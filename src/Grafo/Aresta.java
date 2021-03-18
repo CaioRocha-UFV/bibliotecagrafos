@@ -7,6 +7,7 @@ class Aresta implements Comparator<Aresta> {
     float peso = 1;
     Vertice verticeOrigem;
     Vertice verticeAlvo;
+    Aresta equivalente;
 
     // Construtor a partir de um peso e um vértice alvo
     public Aresta(float peso, Vertice verticeOrigem , Vertice verticeAlvo) {
@@ -18,6 +19,14 @@ class Aresta implements Comparator<Aresta> {
     // Construtor vazio -> Usado no Dijkstra
     public Aresta(){
 
+    }
+
+    public void setEquivalente(Aresta equiv){
+        this.equivalente = equiv;
+    }
+
+    public Aresta getEquivalente(){
+        return this.equivalente;
     }
 
     // Acessa peso
@@ -44,6 +53,6 @@ class Aresta implements Comparator<Aresta> {
     }
 
     boolean EhEquivalenteA(Aresta aresta2){
-        return (aresta2.VerticeAlvo().equals(this.VerticeDeOrigem()) && aresta2.VerticeDeOrigem().equals(this.VerticeAlvo()));
+        return (aresta2 == equivalente);
     }
 }
