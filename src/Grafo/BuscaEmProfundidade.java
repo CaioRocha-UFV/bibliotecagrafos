@@ -81,7 +81,7 @@ public class BuscaEmProfundidade {
 
         // Chamada da função recursiva que fará a busca
         //System.out.print("Iniciando busca em profundidade:\n");
-        retorno = BuscaRecursivaDFS(vertice, retorno);
+        retorno = BuscaIterativaDFS(vertice, retorno);
 
         return retorno;
     }
@@ -125,7 +125,87 @@ public class BuscaEmProfundidade {
 
         return retorno;
     }
+
+
+    private static ParVertArest BuscaIterativaDFS(Vertice vertice, ParVertArest retorno){
+        
+        ArrayList<Vertice> verticesVisitados = retorno.getVertices();
+        LinkedHashMap<Aresta, Boolean> arestasVisitadas = retorno.getArestas();
+        Stack<Vertice> pilhaVertices = new Stack<Vertice>();
+        Stack<Aresta> pilhaArestas = new Stack<Aresta>();
+        Vertice vertTiradoDaPilha = new Vertice(0);
+        Aresta vizinho = new Aresta();
+        int i;
+        
+        // Coloca o vartice por onde se vai iniciar a busca na pilha
+        pilhaVertices.push(vertice);
+        
+        while (pilhaVertices.empty() == false || pilhaArestas.empty() == false){
+           
+            // Caso a pilha de vertices nao esteja vazia, pega o ultimo valor inserido e retira ele da pilha
+            if (pilhaVertices.empty() == false){
+                vertTiradoDaPilha = pilhaVertices.peek();
+                pilhaVertices.pop();
+            }
+            
+            // Verifica se o vertice tirado da pilha ja nao foi visitado.
+            // Caso em que pode acontecer eh se ele ja foi marcado e entrou na verificacao de aresta de retorno
+            if (verticesVisitados.contains(vertTiradoDaPilha) == false){
+               
+                // Marca o vertice atual (Alvo desta aresta) como visitado
+                verticesVisitados.add(vertTiradoDaPilha);
+                retorno.setVertices(verticesVisitados);
+            
+                // Pega a lista de vizinhos do vertice e adiciona na pilha a partir do ultimo para que o primeiro
+                // fique no topo.
+                for (i = (vertTiradoDaPilha.vizinhos.size() - 1); i >= 0; i--){
+
+                    Aresta aresta = vertTiradoDaPilha.vizinhos.get(i);
+
+                    if (pilhaArestas.contains(aresta) == false){
+                        pilhaArestas.push(aresta);
+                    } 
+                }
+            }
+          
+
+            // Caso a pilha de arestas noa esteja vazia, pega um vizinho do vertice e retira da pilha
+            if (pilhaArestas.empty() == false){
+                vizinho = pilhaArestas.peek();
+                pilhaArestas.pop();
+            }
+            
+
+            if (verticesVisitados.contains(vizinho.VerticeAlvo()) == false){
+                // Visita
+                arestasVisitadas.put(vizinho, false);
+                retorno.setArestas(arestasVisitadas);
+                
+                // Coloca o vertice na pilha para que seus vizinhos possam ser verificados
+                pilhaVertices.push(vizinho.VerticeAlvo());
+
+            } 
+            else if (verticesVisitados.contains(vizinho.VerticeAlvo()) == true){ 
+                // Caso ja tenha sido visitado
+                // E se for uma aresta de retorno não armazenada
+                // E não Explorada
+                boolean flagExplored = false;
+                for (Aresta aresta : arestasVisitadas.keySet()){
+                    if (aresta.EhEquivalenteA(vizinho) || aresta.equals(vizinho)){
+                        flagExplored = true;
+                    }
+                }
+                if (flagExplored == false){
+                    // Armazena e explora a aresta
+                    arestasVisitadas.put(vizinho, true);
+                    retorno.setArestas(arestasVisitadas);
+                }
+            }
+        }
+        return retorno;
+    }
 }
+
 
 class ParVertArest{
     ArrayList<Vertice> vertices;

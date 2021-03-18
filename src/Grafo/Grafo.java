@@ -45,7 +45,7 @@ public class Grafo{
         BufferedReader reader = null;
 
         try {
-            ArrayList<Vertice> adjList  = new ArrayList<Vertice>();
+            ArrayList<Vertice> adjList;
             String currentLine;
             //String pathName;
             int numDeVertices = 0;
@@ -57,6 +57,7 @@ public class Grafo{
             // Numero de vértices a partir da primeira linha
             numDeVertices = Integer.parseInt(reader.readLine());
 
+            adjList  = new ArrayList<Vertice>(numDeVertices);
             // Armazena internamente no Grafo o número total de vértices
             //numeroDeVertices = numDeVertices;
 
@@ -440,8 +441,8 @@ public class Grafo{
         // BUSCA EM PROFUNDIDADE
         ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade.Explorar(VerticeDeIndex(1) , grafo);
 
-        String nomeArquivo1 = "Dados do Grafo.txt";
-        String nomeArquivo2 = "GrafoArestasRetorno.txt";
+        String nomeArquivo1 = "TesteBuscaIterativa.txt";
+        //String nomeArquivo2 = "GrafoArestasRetorno.txt";
         
         // Arquivo que vai armazenar o grafo resultante da busca em profundidade
         FileWriter fw1 = new FileWriter(nomeArquivo1, false);
