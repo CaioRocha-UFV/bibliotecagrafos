@@ -19,14 +19,14 @@ public class BuscaEmProfundidade {
 
         ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = new ArrayList<>();
 
-        System.out.println("Início da BUSCA EM PROFUNDIDADE");
+        //System.out.println("Início da BUSCA EM PROFUNDIDADE");
         // Aplica a busca em um primeiro componente conexo que contém o vertice dado
         ParVertArest novaComponenteConexa = BuscaDFS(vertice);
         for (Vertice verticeExplorado : novaComponenteConexa.getVertices()){
             verticesNaoExplorados.remove(verticeExplorado);
         }
         componentesConexas.add(novaComponenteConexa.getArestas());
-        System.out.println("DFS: Primeiro Componente percorrido");
+        //.out.println("DFS: Primeiro Componente percorrido");
 
         // Explora o resto do Grafo caso este seja desconexo
         while (verticesNaoExplorados.size() > 0){
@@ -38,9 +38,9 @@ public class BuscaEmProfundidade {
             }
 
             componentesConexas.add(novaComponenteConexa.getArestas());
-            System.out.println("DFS: Componente " + componentesConexas.indexOf(novaComponenteConexa.getArestas()) + " percorrido");
+            //System.out.println("DFS: Componente " + componentesConexas.indexOf(novaComponenteConexa.getArestas()) + " percorrido");
         }
-        System.out.println("FIM da BUSCA EM PROFUNDIDADE");
+        //System.out.println("FIM da BUSCA EM PROFUNDIDADE");
         // Retorna o conjunto de componentes conexas
         return componentesConexas;
     }

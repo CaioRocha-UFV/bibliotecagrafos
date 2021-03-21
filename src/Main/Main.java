@@ -8,13 +8,22 @@ public class Main {
    
     public static void main(String[] args) throws IOException {
     
+
+
+        Interface interface1 = new Interface();
+
+        interface1.InterfaceDeAcesso();
+
+
+
+        /*
         String arquivo;
         Grafo shy = new Grafo();
         Scanner entrada = new Scanner(System.in);
         
         System.out.print("Nome do arquivo: ");
         //arquivo = entrada.next();
-        arquivo = "grafo5 07032021093040.txt";
+        arquivo = "oks.txt";
 
         // Passa o nome do arquivo e cria o grafo daqueles dados
         System.out.println("Comecando a criar o grafo.");
@@ -24,5 +33,6 @@ public class Main {
         System.out.println("Tamanho grafo: " + shy.Tamanho());
         shy.GerarArquivoBuscaEArestasRetorno();
         entrada.close();
+        */
     }
 }

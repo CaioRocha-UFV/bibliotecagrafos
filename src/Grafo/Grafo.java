@@ -440,27 +440,62 @@ public class Grafo{
         return false;
     }
 
-    public void GerarArquivoBuscaEArestasRetorno() throws IOException {
+
+
+    public void GerarArquivos(int indiceVerticePesquisar, int indiceVertArestaPesq1, int indiceVertArestaPesq2) throws IOException{
+
         // BUSCA EM PROFUNDIDADE
         ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade.Explorar(VerticeDeIndex(1) , grafo);
         int numComponentesConexas = componentesConexas.size();
-        
+        int i = 0;
+        Set<Vertice> VertsDasArestasRetorno = new HashSet<Vertice>();
+        Set<Vertice> VertsDasArestasBusca = new HashSet<Vertice>();
 
-        String nomeArquivo1 = "TesteBuscaIterativa.txt";
-        //String nomeArquivo2 = "GrafoArestasRetorno.txt";
+        // Cria uma lista de sets que contem os vertices pertencentes a cada componente conexa
+        ArrayList<Set<Vertice>> verticesDaComponente = new ArrayList<>(numComponentesConexas);
         
+        for (LinkedHashMap<Aresta, Boolean> componente : componentesConexas){
+            // Adiciona um set (conjunto de vertices da componente conexa) na lista
+            verticesDaComponente.add(new HashSet<Vertice>());
+            for (Aresta aresta : componente.keySet()){
+                
+                if (componente.get(aresta) == true){
+                    VertsDasArestasRetorno.add(aresta.verticeOrigem);
+                    VertsDasArestasRetorno.add(aresta.verticeAlvo);
+                }
+                else{
+                    VertsDasArestasBusca.add(aresta.verticeOrigem);
+                    VertsDasArestasBusca.add(aresta.verticeAlvo);
+                }
+                verticesDaComponente.get(i).add(aresta.VerticeDeOrigem());
+                verticesDaComponente.get(i).add(aresta.VerticeAlvo());
+            }
+            i++;
+        }
+
+
+        // Chamar funcao que gera o arquivo com dados gerais do grafo e dados especificos de um vertice e aresta
+        ArquivoInformacoes(indiceVerticePesquisar, indiceVertArestaPesq1, indiceVertArestaPesq2, numComponentesConexas, verticesDaComponente);
+
+        // Chamar funcao que gera o arquivo que contem as informacoes da busca em profundidade
+        GerarArquivoBuscaEArestasRetorno(componentesConexas, VertsDasArestasRetorno, VertsDasArestasBusca);
+
+        System.out.println("Arquivos Gerados com sucesso.");
+
+    }
+
+
+
+
+    public void ArquivoInformacoes(int indiceVerticePesquisar, int indiceVertArestaPesq1, int indiceVertArestaPesq2, int numComponentesConexas, ArrayList<Set<Vertice>> verticesDaComponente) throws IOException{
+
+        String nomeArquivo = "DadosGrafo.txt";
+        int numComponente = 1;
+
         // Arquivo que vai armazenar o grafo resultante da busca em profundidade
-        FileWriter fw1 = new FileWriter(nomeArquivo1, false);
+        FileWriter fw1 = new FileWriter(nomeArquivo, false);
         BufferedWriter bw1 = new BufferedWriter(fw1);
 
-        // Arquivo que vai armazenar grafo formado pelas arestas de retorno
-        //FileWriter fw2 = new FileWriter(nomeArquivo2, false);
-        //BufferedWriter bw2 = new BufferedWriter(fw2);
-
-
-        // Vértices de exemplo
-        int verticeDeTeste1 = 1;
-        int verticeDeTeste2 = 5;
 
         bw1.write(" ----------------------------------------------\n");
         bw1.write("|         TRABALHO PRÁTICO 1 - CCF 331         |\n");
@@ -470,69 +505,72 @@ public class Grafo{
         bw1.write("Tamanho do Grafo: "+ Tamanho() +"\n");
         bw1.write("Grau mínimo do Grafo: " + GrauMinimo() + "\n");
         bw1.write("Grau máximo do Grafo: " + GrauMaximo() + "\n\n");
-        bw1.write("Número de componentes conexas: " + componentesConexas.size() + "\n");
 
-        if (EhPonte(5, 6, numComponentesConexas))
-            bw1.write("A aresta 5-6 É uma ponte!!\n");
+        bw1.write("---------------------------------------------------\n");
+
+        bw1.write("Informações gerais sobre o vértice " + indiceVerticePesquisar + ".\n");
+        bw1.write("Verificação de ponte para os vértices: " + indiceVertArestaPesq1 + " " + indiceVertArestaPesq2 + ".\n");
+
+        bw1.write("Vizinhos de "+ indiceVerticePesquisar + ": "+ StringVizinhosDoVerticeDeIndice(indiceVerticePesquisar) + "\n");
+        bw1.write("Grau de "+ indiceVerticePesquisar + ": " + VerticeDeIndex(indiceVerticePesquisar).Grau() + "\n------------\n");
+
+
+        if (EhArticulacao(indiceVerticePesquisar, numComponentesConexas)){
+            bw1.write("Vértice "+ indiceVerticePesquisar + " É uma articulação!" + "\n");
+        } else{
+            bw1.write("Vértice "+ indiceVerticePesquisar + " NÃO É uma articulação!" + "\n");
+        }
+
+
+        if (EhPonte(indiceVertArestaPesq1, indiceVertArestaPesq2, numComponentesConexas)){
+            bw1.write("A aresta " + indiceVertArestaPesq1 + "-" + indiceVertArestaPesq2 +  "É uma ponte!!\n");
+        }
+        else {
+            bw1.write("A aresta " + indiceVertArestaPesq1 + "-" + indiceVertArestaPesq2 +  " NÃO É uma ponte!!\n");
+        }
         bw1.write("\n");
 
-        bw1.write("> Dados dois vértices, por exemplo: " + verticeDeTeste1 + " e " + verticeDeTeste2 + "\n");
-        // Dados do vértice 1
-        if (EhArticulacao(verticeDeTeste1, numComponentesConexas)){
-            bw1.write("Vértice "+ verticeDeTeste1 + " É uma articulação!" + "\n");
-        } else{
-            bw1.write("Vértice "+ verticeDeTeste1 + " NÃO É uma articulação!" + "\n");
-        }
-        bw1.write("Vizinhos de "+ verticeDeTeste1 + ": "+ StringVizinhosDoVerticeDeIndice(verticeDeTeste1) + "\n");
-        bw1.write("Grau de "+ verticeDeTeste1 + ": "+ VerticeDeIndex(verticeDeTeste1).Grau() + "\n------------\n");
-        
-        // Dados do vértice 2
-        if (EhArticulacao(verticeDeTeste2, numComponentesConexas)){
-            bw1.write("Vértice "+ verticeDeTeste2 + " É uma articulação!" + "\n");
-        } else{
-            bw1.write("Vértice "+ verticeDeTeste2 + " NÃO É uma articulação!" + "\n");
-        }
-        
-        bw1.write("Vizinhos de "+ verticeDeTeste2 + ": "+ StringVizinhosDoVerticeDeIndice(verticeDeTeste2) + "\n");
-        bw1.write("Grau de "+ verticeDeTeste2 + ": " + VerticeDeIndex(verticeDeTeste2).Grau() + "\n------------\n");
-        
-        // Dijkstra
-        //bw1.write("Menor distância entre " + verticeDeTeste1 +  " e "+ verticeDeTeste2 + ": "+ MenorCaminhoDijkstra(verticeDeTeste1, verticeDeTeste2) + "\n");
-        //bw1.write("Menor caminho entre " + verticeDeTeste1 +  " e "+ verticeDeTeste2 + ":\n"+ CaminhoDoMenorCaminhoDijkstra(verticeDeTeste1, verticeDeTeste2) + "\n\n");
+        bw1.write("---------------------------------------------------\n");
 
-        bw1.write("\n____________________________________________" + "\n");
+        bw1.write("\n");
 
-        // Busca em profundidade
-        bw1.write("Busca em profundidade a partir do vértice " + verticeDeTeste1 + ":\n\n");
+        bw1.write("O grafo possui " + numComponentesConexas + " componente(s) conexa(s). \n");
 
-        Set<Vertice> verticesNoComponenteRetorno = new HashSet<Vertice>();
-        for (LinkedHashMap<Aresta, Boolean> componente : componentesConexas){
-            Set<Vertice> verticesNoComponente = new HashSet<Vertice>();
-            /*
-            bw1.write("COMPONENTE " + (componentesConexas.indexOf(componente)+1) + "\n");
-            for (Aresta aresta : componente.keySet()){
-                bw1.write(aresta.VerticeDeOrigem().Index() + " --> "+ aresta.VerticeAlvo().Index());
-                if (componente.get(aresta) == true){
-                    // RETORNO
-                    bw1.write(" (RETORNO)");
-                    verticesNoComponenteRetorno.add(aresta.VerticeDeOrigem());
-                    verticesNoComponenteRetorno.add(aresta.VerticeAlvo());
-                } 
-                else {
-                     // Armazena os vértices do componente
-                    verticesNoComponente.add(aresta.VerticeDeOrigem());
-                    verticesNoComponente.add(aresta.VerticeAlvo());
-                }
-                bw1.write("\n");
+        for (Set<Vertice> vertsComponente : verticesDaComponente){
+
+            bw1.write("Componente " + numComponente + ": \n");
+            bw1.write("Vertices: ");
+            for (Vertice verts : vertsComponente){
+                bw1.write(verts.index + " ");
             }
-            */
-            bw1.write("Número de vértices no componente: " + verticesNoComponente.size() + "\n\n");
-            bw1.write("----------------------------------------\n");
+            numComponente++;
+            bw1.write("\n\n");
         }
+        bw1.close();
+        fw1.close();
+    }
 
 
-        //bw2.write("Número de vértices das arestas de retorno: " + verticesNoComponenteRetorno + "\n");
-/*
+
+
+
+
+    public void GerarArquivoBuscaEArestasRetorno(ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas, Set<Vertice> VertsDasArestasRetorno, Set<Vertice> VertsDasArestasBusca) throws IOException {
+        
+        String nomeArquivo1 = "GrafoBuscaProfundidade.txt";
+        String nomeArquivo2 = "GrafoArestasRetorno.txt";
+        
+        // Arquivo que vai armazenar o grafo resultante da busca em profundidade
+        FileWriter fw1 = new FileWriter(nomeArquivo1, false);
+        BufferedWriter bw1 = new BufferedWriter(fw1);
+
+        // Arquivo que vai armazenar grafo formado pelas arestas de retorno
+        FileWriter fw2 = new FileWriter(nomeArquivo2, false);
+        BufferedWriter bw2 = new BufferedWriter(fw2);
+
+        bw1.write(VertsDasArestasBusca.size() + "\n");
+        bw2.write(VertsDasArestasRetorno.size() + "\n");
+
         // Laço para escrever as arestas nos arquivos
         for (LinkedHashMap<Aresta, Boolean> componente : componentesConexas){
             
@@ -540,25 +578,21 @@ public class Grafo{
                
                 if (componente.get(aresta) == true){
                     // RETORNO
-                    bw2.write(aresta.VerticeDeOrigem() + " " + aresta.VerticeAlvo() + " " + aresta.Peso() + "\n");
+                    bw2.write(aresta.VerticeDeOrigem().Index() + " " + aresta.VerticeAlvo().Index() + " " + aresta.Peso() + "\n");
                 }
                 else {
-                    bw1.write(aresta.VerticeDeOrigem() + " " + aresta.VerticeAlvo() + " " + aresta.Peso() + "\n");
+                    bw1.write(aresta.VerticeDeOrigem().Index() + " " + aresta.VerticeAlvo().Index() + " " + aresta.Peso() + "\n");
                 }
             }
-        }*/
+        }
 
         System.out.println("ARQUIVO GERADO!");
-
-
 
         // 
         bw1.close();
         fw1.close();
-        //bw2.close();
-        //fw2.close();
+        bw2.close();
+        fw2.close();
 
     }
-
-
 }
