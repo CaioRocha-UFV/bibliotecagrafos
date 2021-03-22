@@ -12,7 +12,7 @@ class Dijkstra {
 
     // O grafo onde este algoritmo esta sendo aplicado
     private Grafo grafo;
-    private ArrayList<Vertice> verticesDoGrafo;
+    private HashMap<Integer, Vertice> verticesDoGrafo;
     private int totalDeVertices;
 
     // Construtor
@@ -20,7 +20,7 @@ class Dijkstra {
         this.grafo = grafo;
 
         verticesDoGrafo = grafo.Vertices();
-        totalDeVertices = verticesDoGrafo.get(verticesDoGrafo.size()-1).Index()+1;
+        totalDeVertices = verticesDoGrafo.size();
     
 
         distancias = new float[totalDeVertices+1];
@@ -30,7 +30,7 @@ class Dijkstra {
 
     public Stack<Vertice> CaminhoEntre(Vertice vInicial, Vertice vFinal){
         
-        if (distancias[vFinal.Index()] == Integer.MAX_VALUE){
+        if (distancias[vFinal.getIndex()] == Integer.MAX_VALUE){
             Stack<Vertice> caminho = new Stack<Vertice>();
             caminho.push(vInicial);
             return caminho;
@@ -42,8 +42,8 @@ class Dijkstra {
         while (currVertice != vInicial){
             caminho.push(currVertice);
 
-            for (Aresta vizinho : currVertice.Vizinhos()){
-                if (distancias[vizinho.VerticeAlvo().Index()] + vizinho.Peso() == distancias[currVertice.Index()]){
+            for (Aresta vizinho : currVertice.getVizinhos()){
+                if (distancias[vizinho.VerticeAlvo().getIndex()] + vizinho.Peso() == distancias[currVertice.getIndex()]){
                     currVertice = vizinho.VerticeAlvo();
                     break;
                 }
@@ -67,7 +67,7 @@ class Dijkstra {
         pqueue.add(new Aresta(0, verticeInicial, verticeInicial));
 
         // Distancia ao vertice inicial = 0
-        distancias[verticeInicial.Index()] = 0;
+        distancias[verticeInicial.getIndex()] = 0;
 
         // Visita os vértices
         while (visitados.size() != totalDeVertices){
@@ -93,17 +93,17 @@ class Dijkstra {
         float novaDistancia = -1;
 
         // Processa os vizinhos de v
-        for (Aresta aresta : vertice.Vizinhos()){
+        for (Aresta aresta : vertice.getVizinhos()){
             Vertice vizinho = aresta.VerticeAlvo();
 
             // Testa se ainda não foi visitado
             if (visitados.contains(vizinho) == false){
                 distanciaAresta = aresta.Peso();
-                novaDistancia = distancias[vertice.Index()] + distanciaAresta;
+                novaDistancia = distancias[vertice.getIndex()] + distanciaAresta;
 
                 // Compara as distancias
-                if (novaDistancia < distancias[vizinho.Index()] ) {
-                    distancias[vizinho.Index()] = novaDistancia;
+                if (novaDistancia < distancias[vizinho.getIndex()] ) {
+                    distancias[vizinho.getIndex()] = novaDistancia;
                 }
 
                 // Adiciona a aresta atual na lista de prioridade

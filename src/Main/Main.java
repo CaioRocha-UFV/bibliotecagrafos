@@ -1,7 +1,6 @@
 package Main;
 
 import java.io.IOException;
-import java.util.Scanner;
 import Grafo.*;
 
 public class Main {

@@ -12,10 +12,10 @@ public class BuscaEmProfundidade {
     //                Para os valores Booleans tem-se que:
     //                     - true  -> É uma aresta de retorno
     //                     - false -> É uma aresta de caminho
-    public static ArrayList<LinkedHashMap<Aresta, Boolean>> Explorar(Vertice vertice, ArrayList<Vertice> grafo){
+    public static ArrayList<LinkedHashMap<Aresta, Boolean>> Explorar(Vertice vertice, HashMap<Integer, Vertice> grafo){
 
         Stack<Vertice> verticesNaoExplorados = new Stack<Vertice>();
-        verticesNaoExplorados.addAll(grafo);
+        verticesNaoExplorados.addAll(grafo.values());
 
         ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = new ArrayList<>();
 
@@ -82,7 +82,7 @@ public class BuscaEmProfundidade {
         retorno.setVertices(verticesVisitados);
 
         // Recursividade em todos os vizinhos
-        for (Aresta vizinho : vertice.Vizinhos()){
+        for (Aresta vizinho : vertice.getVizinhos()){
 
             // Se o vizinho ainda não foi visitado
             if (verticesVisitados.contains(vizinho.VerticeAlvo()) == false){

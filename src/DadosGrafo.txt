@@ -21,8 +21,8 @@ A aresta 3-4 NÃO É uma ponte!!
 
 O grafo possui 2 componente(s) conexa(s). 
 Componente 1: 
-Vertices: 2 5 3 6 4 1 
+Vertices: 1 6 2 5 3 4 
 
 Componente 2: 
-Vertices: 7 9 8 
+Vertices: 8 9 7 
 

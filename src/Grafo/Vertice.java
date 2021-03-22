@@ -16,12 +16,12 @@ class Vertice {
     }
 
     // Acessa o index
-    int Index(){
+    int getIndex(){
         return index;
     }
 
     // Acessa a Array de vizinhos
-    ArrayList<Aresta> Vizinhos(){
+    ArrayList<Aresta> getVizinhos(){
         return vizinhos;
     }
 
@@ -31,7 +31,7 @@ class Vertice {
             String vizinhosString = "{";
 
             for (Aresta aresta : vizinhos){
-                int index = aresta.VerticeAlvo().Index();
+                int index = aresta.VerticeAlvo().getIndex();
                 vizinhosString = vizinhosString + Integer.toString(index) + ", ";
             }
             
@@ -71,7 +71,7 @@ class Vertice {
             int indexListaDeVizinhos = 0;
             // Adiciona a aresta respeitando a inserção ordenada
             for (Aresta vizinho : this.vizinhos){
-                if (vertice2.Index() < vizinho.VerticeAlvo().Index()){
+                if (vertice2.getIndex() < vizinho.VerticeAlvo().getIndex()){
                     indexListaDeVizinhos = this.vizinhos.indexOf(vizinho);
                     this.vizinhos.add(indexListaDeVizinhos , novoVizinho);
                     return novoVizinho;

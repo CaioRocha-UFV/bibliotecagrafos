@@ -91,7 +91,7 @@ public class Astar {
                 return rota;
             }
 
-            for (Aresta aresta : proximo.Vertice().Vizinhos() ){
+            for (Aresta aresta : proximo.Vertice().getVizinhos() ){
                 RouteNode proximoNode = allNodes.getOrDefault(aresta.VerticeAlvo(), new RouteNode(aresta.VerticeAlvo()));
                 allNodes.put(aresta.VerticeAlvo(), proximoNode);
 

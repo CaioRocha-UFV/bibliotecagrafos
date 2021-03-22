@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Grafo{
-    private ArrayList<Vertice> grafo;
+    private HashMap<Integer, Vertice> grafo;
 
 
     public Grafo(){
@@ -18,7 +18,7 @@ public class Grafo{
     }
 
     // COPY CONSTRUCTOR
-    public Grafo(ArrayList<Vertice> grafo){
+    public Grafo(HashMap<Integer, Vertice> grafo){
         this.grafo = grafo;
     }
 
@@ -28,24 +28,25 @@ public class Grafo{
     // Retorna: void
     public void CriarGrafo(String fileName) throws FileNotFoundException, IOException{
 
-        grafo = new ArrayList<Vertice>();
+        grafo = new HashMap<Integer, Vertice>();
         grafo = LeituraDeArquivo(fileName);
         
     }
 
-    public ArrayList<Vertice> getGrafo(){
+    //
+    public HashMap<Integer, Vertice> getGrafo(){
         return grafo;
     }
 
     // Função INTERNA
     // Recebe: Nome do arquivo
     // Ação: Lê o arquivo e cria os devidos vértices e arestas
-    // Retorna: Uma array de Vertices (O grafo)
-    private ArrayList<Vertice> LeituraDeArquivo (String fileName)  throws FileNotFoundException, IOException{
+    // Retorna: Um HashMap de Vertices (O próprio grafo)
+    private HashMap<Integer, Vertice> LeituraDeArquivo (String fileName)  throws FileNotFoundException, IOException{
         BufferedReader reader = null;
 
         try {
-            ArrayList<Vertice> adjList;
+            HashMap<Integer, Vertice> novoGrafo;
             String currentLine;
             //String pathName;
             int numDeVertices = 0;
@@ -57,7 +58,7 @@ public class Grafo{
             // Numero de vértices a partir da primeira linha
             numDeVertices = Integer.parseInt(reader.readLine());
 
-            adjList  = new ArrayList<Vertice>(numDeVertices);
+            novoGrafo  = new HashMap<Integer, Vertice>(numDeVertices);
             // Armazena internamente no Grafo o número total de vértices
             //numeroDeVertices = numDeVertices;
 
@@ -74,8 +75,8 @@ public class Grafo{
                 Vertice vertice2;
 
                 // Adiciona os vértices na lista
-                vertice1 = AdicionaVertice(adjList, index1);
-                vertice2 = AdicionaVertice(adjList, index2);
+                vertice1 = AdicionaVertice(novoGrafo, index1);
+                vertice2 = AdicionaVertice(novoGrafo, index2);
            
                 if (vertice1.EhvizinhoDe(vertice2) == false){
                     // Adiciona as arestas
@@ -86,7 +87,7 @@ public class Grafo{
                 }
 
             }
-            return adjList;
+            return novoGrafo;
             
         } finally{
             try{
@@ -103,79 +104,51 @@ public class Grafo{
     // Função INTERNA
     // Recebe: Index do vértice
     // Ação: Adiciona um vértice no grafo
-    // Retorna: (true) Caso tudo dê certo
-    //          (false) Caso o vértice já esteja na lista
+    // Retorna: O vértice adicionado
+    //          ou o Vértice que ja estava no grafo
     Vertice AdicionaVertice(int newIndex){
-
-        int indexListaDeVertices = 0;
-        for (Vertice vertice : this.grafo){
-            // Testa se o novo vertice ja está na lista
-            if (newIndex == vertice.Index())
-                return vertice;
-
-            // Se o index novo é menor que o do vertice nesta posição
-            // Cria umnovo vertice aqui
-            if (newIndex < vertice.Index()){
-                indexListaDeVertices = grafo.indexOf(vertice);
-                Vertice novoVertice = new Vertice(newIndex);
-
-                this.grafo.add(indexListaDeVertices, novoVertice);
-                return novoVertice;
-            }
+        // Se o vértice não estiver no grafo
+        if (this.grafo.containsKey(newIndex) == false){
+            // Adiciona-o no grafo
+            Vertice novoVertice = new Vertice(newIndex);
+            this.grafo.put(newIndex, novoVertice);
+            // Retorna o vertice adicionado
+            return novoVertice;
         }
-        // Se chegou aqui, o vertice é adicionado ao final da lista
-        Vertice novoVertice = new Vertice(newIndex);
-        this.grafo.add(novoVertice);
-        return novoVertice;
-    }
 
-    void AdicionaVertice (Vertice newVert){
-        int indexListaDeVertices = 0;
-        for (Vertice vertice : this.grafo){
-            // Testa se o novo vertice ja está na lista
-            if (vertice.equals(newVert))
-                return;
-
-            // Se o index novo é menor que o do vertice nesta posição
-            // Cria um novo vertice aqui
-            if (newVert.Index() < vertice.Index()){
-                indexListaDeVertices = grafo.indexOf(vertice);
-
-                this.grafo.add(indexListaDeVertices, newVert);
-                return;
-            }
-        }
-        // Se chegou aqui, o vertice é adicionado ao final da lista
-        this.grafo.add(newVert);
+        // Caso o vértice já esteja no grafo, retorna o vértice 
+        return this.grafo.get(newIndex);
     }
 
     // Função INTERNA
-    // Recebe: Index do vértice
-    // Ação: Adiciona um vértice em um grafo dado
-    // Retorna: (true) Caso tudo dê certo
-    //          (false) Caso o vértice já esteja na lista
-    static Vertice AdicionaVertice(ArrayList<Vertice> novoGrafo, int newIndex){
-
-        int indexListaDeVertices = 0;
-        for (Vertice vertice : novoGrafo){
-            // Testa se o novo vertice ja está na lista
-            if (newIndex == vertice.Index())
-                return vertice;
-
-            // Se o index novo é menor que o do vertice nesta posição
-            // Cria umnovo vertice aqui
-            if (newIndex < vertice.Index()){
-                indexListaDeVertices = novoGrafo.indexOf(vertice);
-                Vertice novoVertice = new Vertice(newIndex);
-
-                novoGrafo.add(indexListaDeVertices, novoVertice);
-                return novoVertice;
-            }
+    // Recebe: Um vértice
+    // Ação: Adiciona o vértice no grafo, caso não já esteja
+    // Retorna: 
+    void AdicionaVertice (Vertice newVert){
+        // Se o vértice não estiver no grafo
+        if (this.grafo.containsKey(newVert.getIndex()) == false){
+            // Adiciona-o no grafo
+            this.grafo.put(newVert.getIndex(), newVert);
         }
-        // Se chegou aqui, o vertice é adicionado ao final da lista
-        Vertice novoVertice = new Vertice(newIndex);
-        novoGrafo.add(novoVertice);
-        return novoVertice;
+    }
+
+    // Função INTERNA
+    // Recebe: Grafo e o Index do vértice
+    // Ação: Adiciona um vértice em um grafo dado
+    // Retorna: O vértice adicionado
+    //          ou o Vértice que ja estava no grafo
+    static Vertice AdicionaVertice(HashMap<Integer, Vertice> novoGrafo, int newIndex){
+        // Se o vértice não estiver no grafo
+        if (novoGrafo.containsKey(newIndex) == false){
+            // Adiciona-o no grafo
+            Vertice novoVertice = new Vertice(newIndex);
+            novoGrafo.put(newIndex, novoVertice);
+            // Retorna o vertice adicionado
+            return novoVertice;
+        }
+
+        // Caso o vértice já esteja no grafo, retorna o vértice 
+        return novoGrafo.get(newIndex);
     }
 
     // Função INTERNA
@@ -185,7 +158,7 @@ public class Grafo{
     public Vertice RemoveVertice(int index){
         Vertice v = VerticeDeIndex(index);
 
-        for (Aresta vizinho : v.Vizinhos()){
+        for (Aresta vizinho : v.getVizinhos()){
             vizinho.VerticeAlvo().RemoveVizinho(v);
         }
 
@@ -197,7 +170,7 @@ public class Grafo{
     public static ArrayList<Vertice> RemoveVertice(ArrayList<Vertice> novoGrafo ,int index){
         Vertice v = VerticeDeIndex(novoGrafo, index);
 
-        for (Aresta vizinho : v.Vizinhos()){
+        for (Aresta vizinho : v.getVizinhos()){
             vizinho.VerticeAlvo().RemoveVizinho(v);
         }
 
@@ -208,9 +181,9 @@ public class Grafo{
 
     // Função EXTERNA
     // Recebe:
-    // Ação: Acessa a array de vertices
-    // Retorna: Uma ArrayList de Vertices
-    public ArrayList<Vertice> Vertices(){
+    // Ação: Acessa o HashMap de vertices
+    // Retorna: Um HashMap de Vertices
+    public HashMap<Integer, Vertice> Vertices(){
         return grafo;
     }
 
@@ -221,7 +194,7 @@ public class Grafo{
     public int Tamanho() {
         int numArestas = 0;
 
-        for(Vertice vertice: grafo){
+        for(Vertice vertice: grafo.values()){
             numArestas += vertice.Grau();
         }
 
@@ -235,7 +208,7 @@ public class Grafo{
     public int GrauMinimo(){
         int grauMinimo = Integer.MAX_VALUE;
 
-        for(Vertice vertice: grafo){
+        for(Vertice vertice: grafo.values()){
             if (vertice.Grau() < grauMinimo)
                 grauMinimo = vertice.Grau();
         }
@@ -250,7 +223,7 @@ public class Grafo{
     public int GrauMaximo(){
         int grauMaximo = 0;
 
-        for(Vertice vertice: grafo){
+        for(Vertice vertice: grafo.values()){
             if (vertice.Grau() > grauMaximo)
                 grauMaximo = vertice.Grau();
         }
@@ -262,23 +235,32 @@ public class Grafo{
     // Recebe: Um Índice
     // Ação: Busca um vértice pelo índice no grafo interno
     // Retorna: Vértice encontrado
+    //            ou null caso não encontre o vértice
     private Vertice VerticeDeIndex(int index){
-
-        for (Vertice vertice : grafo){
-            if (vertice.index == index){
-                return vertice;
-            }
+        // Busca o vértice no grafo
+        Vertice vertice = grafo.get(index);
+        if (vertice != null){
+            return vertice;
         }
+
+        // Caso nãoencontre o Grafo, retorna nulo
         System.out.println("VERTICE NÃO ENCONTRADO -- Index: "+index);
         return null;
     }
-    private static Vertice VerticeDeIndex(ArrayList<Vertice> novoGrafo  ,int index){
 
-        for (Vertice vertice : novoGrafo){
-            if (vertice.index == index){
-                return vertice;
-            }
+    // Função INTERNA
+    // Recebe: Um Índice e um grafo
+    // Ação: Busca um vértice pelo índice no grafo dado
+    // Retorna: Vértice encontrado
+    //            ou null caso não encontre o vértice
+    private static Vertice VerticeDeIndex(ArrayList<Vertice> novoGrafo  ,int index){
+        // Busca o vértice no grafo
+        Vertice vertice = novoGrafo.get(index);
+        if (vertice != null){
+            return vertice;
         }
+
+        // Caso nãoencontre o Grafo, retorna nulo
         System.out.println("VERTICE NÃO ENCONTRADO -- Index: "+index);
         return null;
     }
@@ -349,9 +331,9 @@ public class Grafo{
         Stack<Vertice> caminho = dijkstra.CaminhoEntre(vInicio, vFinal);
 
         while (caminho.size() > 1){
-            resultado += caminho.pop().Index() + " -> ";
+            resultado += caminho.pop().getIndex() + " -> ";
         }
-        resultado += caminho.pop().Index();
+        resultado += caminho.pop().getIndex();
 
         return resultado;
     }
@@ -363,7 +345,7 @@ public class Grafo{
         Astar aStar = new Astar();
 
         List<Vertice> rota = aStar.EncontrarCaminho(vInicio, vFinal);
-        System.out.println(rota.stream().map(Vertice::Index).collect(Collectors.toList()));
+        System.out.println(rota.stream().map(Vertice::getIndex).collect(Collectors.toList()));
     }
 
     public void BuscaEmProfundidade(int index){
@@ -375,7 +357,7 @@ public class Grafo{
     }
 
     public int NumeroDeComponentesConexas(){
-        Vertice inicio = grafo.get(0);
+        Vertice inicio = grafo.entrySet().stream().findFirst().get().getValue();;
         ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade.Explorar(inicio , grafo);
         return componentesConexas.size();
     }
@@ -387,17 +369,17 @@ public class Grafo{
 
         // Remove o vertice
         Vertice v = VerticeDeIndex(index);
-        for (Aresta vizinho : v.Vizinhos()){
+        for (Aresta vizinho : v.getVizinhos()){
             vizinho.VerticeAlvo().RemoveVizinho(v);
         }
-        grafo.remove(v);
+        grafo.remove(index);
 
         // Calcula o novo numero de componentes conexas
         numConexasFinal = NumeroDeComponentesConexas();
         
         // Readiciona o vertice
         AdicionaVertice(v);
-        for (Aresta vizinho : v.Vizinhos()){
+        for (Aresta vizinho : v.getVizinhos()){
             vizinho.VerticeAlvo().AdicionarVizinho(v, vizinho.Peso());
         }
 
@@ -578,10 +560,10 @@ public class Grafo{
                
                 if (componente.get(aresta) == true){
                     // RETORNO
-                    bw2.write(aresta.VerticeDeOrigem().Index() + " " + aresta.VerticeAlvo().Index() + " " + aresta.Peso() + "\n");
+                    bw2.write(aresta.VerticeDeOrigem().getIndex() + " " + aresta.VerticeAlvo().getIndex() + " " + aresta.Peso() + "\n");
                 }
                 else {
-                    bw1.write(aresta.VerticeDeOrigem().Index() + " " + aresta.VerticeAlvo().Index() + " " + aresta.Peso() + "\n");
+                    bw1.write(aresta.VerticeDeOrigem().getIndex() + " " + aresta.VerticeAlvo().getIndex() + " " + aresta.Peso() + "\n");
                 }
             }
         }
