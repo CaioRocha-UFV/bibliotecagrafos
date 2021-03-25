@@ -505,7 +505,7 @@ public class Grafo{
             "\nMenor caminho Dijsktra entre " + 
             indiceVerticePesquisar + " e " + 
             indiceVertArestaPesq1 + ": " + 
-            MenorCaminhoDijkstra(indiceVerticePesquisar, indiceVertArestaPesq1 + "\n\n"));
+            MenorCaminhoDijkstra(indiceVerticePesquisar, indiceVertArestaPesq1) + "\n\n");
 
 
         if (EhPonte(indiceVertArestaPesq1, indiceVertArestaPesq2, numComponentesConexas)){
