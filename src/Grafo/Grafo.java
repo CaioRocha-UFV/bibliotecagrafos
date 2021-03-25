@@ -348,12 +348,10 @@ public class Grafo{
         System.out.println(rota.stream().map(Vertice::getIndex).collect(Collectors.toList()));
     }
 
-    public void BuscaEmProfundidade(int index){
-        // Transforma o index dado no vertice buscado
-        Vertice vertice = VerticeDeIndex(index);
-
-        // Inicia a Busca em Profundidade
-
+    public ArrayList<LinkedHashMap<Aresta, Boolean>> BuscaEmProfundidade(int index){
+        // Inicia a Busca em Profundidade no vértice dado
+        ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade.Explorar(VerticeDeIndex(index) , grafo);
+        return componentesConexas;
     }
 
     public int NumeroDeComponentesConexas(){
@@ -427,7 +425,7 @@ public class Grafo{
     public void GerarArquivos(int indiceVerticePesquisar, int indiceVertArestaPesq1, int indiceVertArestaPesq2) throws IOException{
 
         // BUSCA EM PROFUNDIDADE
-        ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade.Explorar(VerticeDeIndex(1) , grafo);
+        ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade(1);
         int numComponentesConexas = componentesConexas.size();
         int i = 0;
         Set<Vertice> VertsDasArestasRetorno = new HashSet<Vertice>();
@@ -502,6 +500,12 @@ public class Grafo{
         } else{
             bw1.write("Vértice "+ indiceVerticePesquisar + " NÃO É uma articulação!" + "\n");
         }
+
+        bw1.write(
+            "\nMenor caminho Dijsktra entre " + 
+            indiceVerticePesquisar + " e " + 
+            indiceVertArestaPesq1 + ": " + 
+            MenorCaminhoDijkstra(indiceVerticePesquisar, indiceVertArestaPesq1 + "\n\n"));
 
 
         if (EhPonte(indiceVertArestaPesq1, indiceVertArestaPesq2, numComponentesConexas)){
