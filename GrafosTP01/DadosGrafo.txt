@@ -3,26 +3,38 @@
  ----------------------------------------------
 >> Dados sobre o Grafo analisado:
 
-Ordem do Grafo: 6
-Tamanho do Grafo: 7
-Grau mínimo do Grafo: 2
-Grau máximo do Grafo: 3
+Ordem do Grafo: 20
+Tamanho do Grafo: 15
+Grau mínimo do Grafo: 1
+Grau máximo do Grafo: 4
 
 ---------------------------------------------------
 Informações gerais sobre o vértice 1.
 Verificação de ponte para os vértices: 3 4.
-Vizinhos de 1: {2, 5}
+Vizinhos de 1: {2, 3}
 Grau de 1: 2
 ------------
-Vértice 1 NÃO É uma articulação!
+Vértice 1 É uma articulação!
 
-Menor caminho Dijsktra entre 1 e 3: 5.0
+Menor caminho Dijsktra entre 1 e 3: 1.0
 
 A aresta 3-4 NÃO É uma ponte!!
 
 ---------------------------------------------------
 
-O grafo possui 1 componente(s) conexa(s). 
+O grafo possui 5 componente(s) conexa(s). 
 Componente 1: 
-Vertices: 1 2 5 3 6 4 
+Vertices: 19 15 10 1 5 3 4 13 2 
+
+Componente 2: 
+Vertices: 20 7 11 9 
+
+Componente 3: 
+Vertices: 16 12 18 
+
+Componente 4: 
+Vertices: 6 17 
+
+Componente 5: 
+Vertices: 8 14 
 

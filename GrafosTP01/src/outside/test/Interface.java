@@ -18,6 +18,7 @@ public class Interface {
 
         String arquivo;
         Grafo shy = new Grafo();
+        shy.LeituraDeJSON();
         Scanner entrada = new Scanner(System.in);
         int indiceVerticeGeral;
         int indiceVerticePonte1, indiceVerticePonte2;
@@ -47,15 +48,15 @@ public class Interface {
 
         shy.GerarArquivos(indiceVerticeGeral, indiceVerticePonte1, indiceVerticePonte2);
         */
-
+        /*
         System.out.println("Comecando a criar o grafo.");
-        shy.CriarGrafo("oks.txt");
+        shy.CriarGrafo("GrafoJSON.txt");
         System.out.println("Terminado de ler o grafo.");
         System.out.println("Ordem o grafo: " + shy.Ordem());
         System.out.println("Tamanho grafo: " + shy.Tamanho());
         shy.GerarArquivos(1, 3, 4);
         entrada.close();
-
+*/
         System.out.println("Execucao finalizada.");
 
     }

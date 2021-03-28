@@ -53,6 +53,7 @@ public class BuscaEmProfundidade {
     // Retorno: Uma instância de ParVertArest que armazena aexploração dos vértices e aresta
     //          desta componente conexa
     private static ParVertArest BuscaDFS(Vertice vertice){
+
         // Cria duas ArrayLists que acompanharão os vértices já visitados na ordem em que são
         // visitados e as arestas de retorno, marcadas como TRUE para aresta de retorno e FALSE para arestas comuns
         // Essa escolha foi a mais apropriada em relação ao objetivo:
@@ -67,6 +68,13 @@ public class BuscaEmProfundidade {
         // que armazena nossas duas estruturas a dessa forma possibilita o retorno
         // de duas estruturas de três diferentes tipos de objetos
         ParVertArest retorno = new ParVertArest(verticesVisitados, arestasVisitadas);
+
+        if (vertice.NumeroDeVizinhos() == 0){
+            Aresta arest = new Aresta(0, vertice, vertice);
+            retorno.arestas.put(arest, false);
+            retorno.vertices.add(vertice);
+            return retorno;
+        }
 
         // Chamada da função recursiva que fará a busca
         //System.out.print("Iniciando busca em profundidade:\n");

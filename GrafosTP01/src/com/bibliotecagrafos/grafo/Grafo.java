@@ -350,9 +350,12 @@ public class Grafo{
 
     public ArrayList<LinkedHashMap<Aresta, Boolean>> BuscaEmProfundidade(int index){
         // Inicia a Busca em Profundidade no vértice dado
+        System.out.println("Iniciando BuscaEmProfundidade");
         ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade.Explorar(VerticeDeIndex(index) , grafo);
+        System.out.println("Fim da BuscaEmProfundidade");
         return componentesConexas;
     }
+
 
     public int NumeroDeComponentesConexas(){
         Vertice inicio = grafo.entrySet().stream().findFirst().get().getValue();;
@@ -426,6 +429,8 @@ public class Grafo{
 
         // BUSCA EM PROFUNDIDADE
         ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade(1);
+
+
         int numComponentesConexas = componentesConexas.size();
         int i = 0;
         Set<Vertice> VertsDasArestasRetorno = new HashSet<Vertice>();
@@ -580,5 +585,94 @@ public class Grafo{
         bw2.close();
         fw2.close();
 
+    }
+
+    public void LeituraDeJSON() throws IOException {
+        String nomeArquivo = "Grafo.json";
+        String linha;
+        Scanner entrada = new Scanner(System.in);
+        HashMap<String, String> idsRotulos  = new HashMap<>();
+
+        FileWriter fw1 = new FileWriter("GrafoJSON.txt", false);
+        BufferedWriter bw1 = new BufferedWriter(fw1);
+
+        FileReader fr = new FileReader(nomeArquivo);
+        BufferedReader br = new BufferedReader(fr);
+
+        linha = br.readLine();
+
+
+        linha = linha.replaceAll("\"",":");
+
+        ArrayList<String> lops = new ArrayList<>(Arrays.asList(linha.split(":|\\,")));
+
+
+        ArrayList<String> vFinale = new ArrayList<String>();
+        for (String s : lops){
+
+
+            if (!(s.equals(lops.get(2)) ||  s.contains("{") || s.contains("}"))){
+
+                vFinale.add(s);
+            }
+
+        }
+
+        /*
+        for (String s : vFinale){
+            System.out.println(s);
+        }
+        */
+
+        String id = "";
+
+        int j = 0;
+        for (int i = 0; i < vFinale.size(); i++){
+
+
+
+            if (j == 0){
+
+
+                if (vFinale.get(i).equals("id")){
+                    id = vFinale.get(i+1);
+                }
+                if (vFinale.get(i).equals("label")){
+                    idsRotulos.put(id, vFinale.get(i+1));
+                }
+            }
+
+            if (vFinale.get(i).equals("length")){
+                if (j == 1){
+                    break;
+                }
+                bw1.write(vFinale.get(i+1) + "\n");
+                j++;
+            }
+
+            if (j == 1){
+                if (vFinale.get(i).equals("from")){
+                    bw1.write(idsRotulos.get(vFinale.get(i+1)) + " ");
+                }
+                if(vFinale.get(i).equals("to")){
+                    bw1.write(idsRotulos.get(vFinale.get(i+1)) + " " );
+                }
+                if(vFinale.get(i).equals("label")){
+                    if (vFinale.get(i+1).equals("3")){
+                        bw1.write("ALOALO\n");
+                    } else {
+                        bw1.write(vFinale.get(i + 1) + "\n");
+                    }
+                }
+            }
+        }
+
+
+        bw1.close();
+        fw1.close();
+
+
+        br.close();
+        fr.close();
     }
 }
