@@ -15,7 +15,10 @@ Vizinhos de 1: {2, 5}
 Grau de 1: 2
 ------------
 Vértice 1 NÃO É uma articulação!
-Menor caminho Dijsktra entre 1 e 3: -8.299999A aresta 3-4 NÃO É uma ponte!!
+
+Menor caminho Dijsktra entre 1 e 3: -8.299999
+
+A aresta 3-4 NÃO É uma ponte!!
 
 ---------------------------------------------------
 
