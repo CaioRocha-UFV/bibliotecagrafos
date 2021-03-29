@@ -551,41 +551,36 @@ public class Grafo{
         bw1.write("Ordem do Grafo: " + Ordem() + "\n");
         bw1.write("Tamanho do Grafo: "+ Tamanho() +"\n");
         bw1.write("Grau mínimo do Grafo: " + GrauMinimo() + "\n");
-        bw1.write("Grau máximo do Grafo: " + GrauMaximo() + "\n\n");
-
+        bw1.write("Grau máximo do Grafo: " + GrauMaximo() + "\n");
         bw1.write("---------------------------------------------------\n");
-
         bw1.write("Informações gerais sobre o vértice " + indiceVerticePesquisar + ".\n");
         bw1.write("Verificação de ponte para os vértices: " + indiceVertArestaPesq1 + " " + indiceVertArestaPesq2 + ".\n");
-
+        bw1.write("---------------------------------------------------\n");
         bw1.write("Vizinhos de "+ indiceVerticePesquisar + ": "+ StringVizinhosDoVerticeDeIndice(indiceVerticePesquisar) + "\n");
         bw1.write("Grau de "+ indiceVerticePesquisar + ": " + VerticeDeIndex(indiceVerticePesquisar).Grau() + "\n------------\n");
-
-
         if (EhArticulacao(indiceVerticePesquisar, numComponentesConexas)){
             bw1.write("Vértice "+ indiceVerticePesquisar + " É uma articulação!" + "\n");
         } else{
             bw1.write("Vértice "+ indiceVerticePesquisar + " NÃO É uma articulação!" + "\n");
         }
-
-        bw1.write(
-                "\nMenor caminho Dijsktra entre " +
-                        indiceVerticePesquisar + " e " +
-                        indiceVertArestaPesq1 + ": " +
-                        MenorCaminhoDijkstra(indiceVerticePesquisar, indiceVertArestaPesq1) + "\n\n");
-
-
-        if (EhPonte(indiceVertArestaPesq1, indiceVertArestaPesq2, numComponentesConexas)){
-            bw1.write("A aresta " + indiceVertArestaPesq1 + "-" + indiceVertArestaPesq2 +  "É uma ponte!!\n");
-        }
-        else {
-            bw1.write("A aresta " + indiceVertArestaPesq1 + "-" + indiceVertArestaPesq2 +  " NÃO É uma ponte!!\n");
-        }
-        bw1.write("\n");
-
         bw1.write("---------------------------------------------------\n");
-
-        bw1.write("\n");
+        bw1.write(
+                "Menor caminho Dijsktra entre " +
+                        indiceVerticePesquisar + " e " +
+                        indiceVertArestaPesq2 + ": " +
+                        MenorCaminhoDijkstra(indiceVerticePesquisar, indiceVertArestaPesq2) + "\n");
+        bw1.write("Caminho percorrido:\n" + CaminhoDoMenorCaminhoDijkstra(indiceVerticePesquisar, indiceVertArestaPesq2) + "\n");
+        bw1.write("---------------------------------------------------\n");
+        if (VerticeDeIndex(indiceVertArestaPesq1).EhvizinhoDe(VerticeDeIndex(indiceVertArestaPesq2)) == false)
+            bw1.write("A aresta " + indiceVertArestaPesq1 + "-" + indiceVertArestaPesq2 + " não existe\n");
+        else {
+            if (EhPonte(indiceVertArestaPesq1, indiceVertArestaPesq2, numComponentesConexas)) {
+                bw1.write("A aresta " + indiceVertArestaPesq1 + "-" + indiceVertArestaPesq2 + " É uma ponte!!\n");
+            } else {
+                bw1.write("A aresta " + indiceVertArestaPesq1 + "-" + indiceVertArestaPesq2 + " NÃO É uma ponte!!\n");
+            }
+        }
+        bw1.write("---------------------------------------------------\n");
 
         bw1.write("O grafo possui " + numComponentesConexas + " componente(s) conexa(s). \n");
 
@@ -656,8 +651,7 @@ public class Grafo{
      * e transforma na entrada padrão da biblioteca
      * @throws IOException
      */
-    public void LeituraDeJSON() throws IOException {
-        String nomeArquivo = "Grafo.json";
+    public void LeituraDeJSON(String nomeArquivo) throws IOException {
         String linha;
         Scanner entrada = new Scanner(System.in);
         HashMap<String, String> idsRotulos  = new HashMap<>();
