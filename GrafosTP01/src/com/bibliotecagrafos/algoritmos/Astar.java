@@ -6,6 +6,8 @@ import java.util.*;
 import com.bibliotecagrafos.vertice.Vertice;
 import com.bibliotecagrafos.aresta.Aresta;
 
+// Descontinuada devido a falta da heuristica nescessária
+
 public class Astar {
     public Astar(){
 

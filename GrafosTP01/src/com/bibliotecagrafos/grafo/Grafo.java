@@ -12,35 +12,46 @@ public class Grafo{
     private HashMap<Integer, Vertice> grafo;
 
 
+    /**
+     * Construtor vazio
+     */
     public Grafo(){
 
     }
 
-    // COPY CONSTRUCTOR
+    /**
+     * Copy Constructor
+     * @param grafo HashMap<Integer, Vertice> do Grafo a ser copiado
+     */
     public Grafo(HashMap<Integer, Vertice> grafo){
         this.grafo = grafo;
     }
 
-    // Função EXTERNA
-    // Recebe: Nome do arquivo
-    // Ação: Gera um grafo com os dados do arquivo e armazena internamente
-    // Retorna: void
-    public void CriarGrafo(String fileName) throws FileNotFoundException, IOException{
-
-        grafo = new HashMap<Integer, Vertice>();
-        grafo = LeituraDeArquivo(fileName);
-
-    }
-
-    //
+    /**
+     * Acessa o Grafo
+     * @return HashMap de vertices
+     */
     public HashMap<Integer, Vertice> getGrafo(){
         return grafo;
     }
 
-    // Função INTERNA
-    // Recebe: Nome do arquivo
-    // Ação: Lê o arquivo e cria os devidos vértices e arestas
-    // Retorna: Um HashMap de Vertices (O próprio grafo)
+    /**
+     * Acessa a função de Leitura de Arquivo
+     * @param fileName Nome do arquivo
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    public void CriarGrafo(String fileName) throws FileNotFoundException, IOException{
+        grafo = new HashMap<Integer, Vertice>();
+        grafo = LeituraDeArquivo(fileName);
+    }
+
+    /**
+     * Gera um grafo com os dados do arquivo e armazena internamente
+     * @param fileName Nome do arquivo
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     private HashMap<Integer, Vertice> LeituraDeArquivo (String fileName)  throws FileNotFoundException, IOException{
         BufferedReader reader = null;
 
@@ -99,12 +110,11 @@ public class Grafo{
     }
 
 
-
-    // Função INTERNA
-    // Recebe: Index do vértice
-    // Ação: Adiciona um vértice no grafo
-    // Retorna: O vértice adicionado
-    //          ou o Vértice que ja estava no grafo
+    /**
+     * Cria e adiciona um vértice no Grafo
+     * @param newIndex Index do vértice
+     * @return Vértice adicionado
+     */
     Vertice AdicionaVertice(int newIndex){
         // Se o vértice não estiver no grafo
         if (this.grafo.containsKey(newIndex) == false){
@@ -119,23 +129,27 @@ public class Grafo{
         return this.grafo.get(newIndex);
     }
 
-    // Função INTERNA
-    // Recebe: Um vértice
-    // Ação: Adiciona o vértice no grafo, caso não já esteja
-    // Retorna:
-    void AdicionaVertice (Vertice newVert){
+    /**
+     * Adiciona um vértice já criado no Grafo
+     * @param newVert Vértice
+     * @return False caso o vértice já esteja no grafo
+     */
+    boolean AdicionaVertice (Vertice newVert){
         // Se o vértice não estiver no grafo
         if (this.grafo.containsKey(newVert.getIndex()) == false){
             // Adiciona-o no grafo
             this.grafo.put(newVert.getIndex(), newVert);
+            return true;
         }
+        return false;
     }
 
-    // Função INTERNA
-    // Recebe: Grafo e o Index do vértice
-    // Ação: Adiciona um vértice em um grafo dado
-    // Retorna: O vértice adicionado
-    //          ou o Vértice que ja estava no grafo
+    /**
+     * Cria e Adiciona um vértice em um Grafo dado
+     * @param novoGrafo
+     * @param newIndex
+     * @return O vértice adicionado (ou que ja estava)
+     */
     static Vertice AdicionaVertice(HashMap<Integer, Vertice> novoGrafo, int newIndex){
         // Se o vértice não estiver no grafo
         if (novoGrafo.containsKey(newIndex) == false){
@@ -150,10 +164,11 @@ public class Grafo{
         return novoGrafo.get(newIndex);
     }
 
-    // Função INTERNA
-    // Recebe: Index do vértice
-    // Ação: Remove um vértice de um grafo dado
-    // Retorna: Vertice removido
+    /**
+     * Remove um vértice a partir de seu índice
+     * @param index
+     * @return
+     */
     public Vertice RemoveVertice(int index){
         Vertice v = VerticeDeIndex(index);
 
@@ -162,7 +177,7 @@ public class Grafo{
         }
 
         grafo.remove(v);
-        //numeroDeVertices -= 1;
+
         return v;
     }
 
@@ -264,45 +279,51 @@ public class Grafo{
         return null;
     }
 
-    // Função INTERNA
-    // Recebe:
-    // Ação: Acessa o número de vértices
-    // Retorna: Número de vértices
+    /**
+     * Retorna o numero de Vértices no Grafo
+     * @return
+     */
     private int NumeroDeVertices(){
         return grafo.size();
     }
 
-    // Função EXTERNA
-    // Recebe:
-    // Ação: Acessa NumeroDeVertices()
-    // Retorna: Ordem do Grafo
+    /**
+     * Retorna a ordem do grafo
+     * @return
+     */
     public int Ordem(){
         return NumeroDeVertices();
     }
 
-    // Função EXTERNA
-    // Recebe: Index do vértice
-    // Ação: Busca pelo vértice através de seu index e acessa o grau
-    // Retorna: Grau do Vértice
+    /**
+     * Busca pelo vértice através de seu index e acessa o grau
+     * @param index
+     * @return
+     */
     public int GrauDoVerticeDeIndex(int index){
         int grau = VerticeDeIndex(index).Grau();
         return grau;
     }
 
-    // Função EXTERNA
-    // Recebe: Index do vértice
-    // Ação: Busca pelos vizinhso do vértice através de seu index
-    // Retorna: Uma string {1, 2, 3} de vizinhos
+
+    /**
+     * Retorna uma String i.e.{1, 2, 4, 6} de vizinhos de um vértice dado
+     * @param index
+     * @return
+     */
     public String StringVizinhosDoVerticeDeIndice(int index){
         Vertice vertice = VerticeDeIndex(index);
         String vizinhos = vertice.StringDeVizinhos();
         return vizinhos;
     }
 
-    // Função EXTERNA
-    // Recebe: O index do vértice inicial e do final
-    // Ação: Busca o menor caminho entre os vertices dados através do algoritmo Dijkstra
-    // Retorna: O valor do caminho
+    /**
+     * Aplica o algortimo de Dijkstra para encontrar o menor caminho
+     * entre dois vértices dados e retorna o valor do caminho
+     * @param inicial
+     * @param fim
+     * @return
+     */
     public String MenorCaminhoDijkstra(int inicial, int fim){
         Vertice vInicio = VerticeDeIndex(inicial);
         //Vertice vFinal = VerticeDeIndex(fim);
@@ -317,6 +338,13 @@ public class Grafo{
         return resultado;
     }
 
+    /**
+     * Aplica Dijkstra e retorna os vértices do
+     * menor caminho percorrido
+     * @param inicial
+     * @param fim
+     * @return
+     */
     public String CaminhoDoMenorCaminhoDijkstra(int inicial, int fim){
         Vertice vInicio = VerticeDeIndex(inicial);
         Vertice vFinal = VerticeDeIndex(fim);
@@ -337,7 +365,7 @@ public class Grafo{
         return resultado;
     }
 
-    /*
+    /* AStar
     public void MenorCaminhoAStar(int inicial, int fim){
         Vertice vInicio = VerticeDeIndex(inicial);
         Vertice vFinal = VerticeDeIndex(fim);
@@ -348,6 +376,11 @@ public class Grafo{
         System.out.println(rota.stream().map(Vertice::getIndex).collect(Collectors.toList()));
     }*/
 
+    /**
+     * Aplica a busca em profundidade a partir de um vértice dado
+     * @param index
+     * @return Uma ArrayList com o cada componente conexa
+     */
     public ArrayList<LinkedHashMap<Aresta, Boolean>> BuscaEmProfundidade(int index){
         // Inicia a Busca em Profundidade no vértice dado
         System.out.println("Iniciando BuscaEmProfundidade");
@@ -356,13 +389,22 @@ public class Grafo{
         return componentesConexas;
     }
 
-
+    /**
+     * Calcula o número de componentes conexas no grafo
+     * @return
+     */
     public int NumeroDeComponentesConexas(){
         Vertice inicio = grafo.entrySet().stream().findFirst().get().getValue();;
         ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade.Explorar(inicio , grafo);
         return componentesConexas.size();
     }
 
+    /**
+     * Testa se um vértice é uma articulação
+     * @param index Vértice testado
+     * @param conexasInicial Número de componentes conexas
+     * @return True se for uma articulação
+     */
     public boolean EhArticulacao(int index, int conexasInicial){
         // Armazena o numero de componentes conexas inicial
         int numConexasInicial = conexasInicial;
@@ -392,6 +434,13 @@ public class Grafo{
 
     }
 
+    /**
+     * Testa se uma aresta dada é uma ponte
+     * @param index1 Vértice 1 da aresta
+     * @param index2 Vértice 2 da aresta
+     * @param conexasInicial Número de componentes conexas
+     * @return True caso seja uma ponte
+     */
     public boolean EhPonte(int index1, int index2, int conexasInicial){
         if (VerticeDeIndex(index1).EhvizinhoDe(VerticeDeIndex(index2)) == false){
             return false;
@@ -424,7 +473,13 @@ public class Grafo{
     }
 
 
-
+    /**
+     * Prepara a geração do arquivo final com os dados do grafo
+     * @param indiceVerticePesquisar Usado para testar as funções
+     * @param indiceVertArestaPesq1 Usado para compor a aresta de teste
+     * @param indiceVertArestaPesq2 Usado para compor a aresta de teste
+     * @throws IOException
+     */
     public void GerarArquivos(int indiceVerticePesquisar, int indiceVertArestaPesq1, int indiceVertArestaPesq2) throws IOException{
 
         // BUSCA EM PROFUNDIDADE
@@ -470,8 +525,15 @@ public class Grafo{
     }
 
 
-
-
+    /**
+     * Efetua a geração do arquivo de dados
+     * @param indiceVerticePesquisar Usado para testar as funções
+     * @param indiceVertArestaPesq1 Usado para compor a aresta de teste
+     * @param indiceVertArestaPesq2 Usado para compor a aresta de teste
+     * @param numComponentesConexas Número já calculado de comp conexas
+     * @param verticesDaComponente
+     * @throws IOException
+     */
     public void ArquivoInformacoes(int indiceVerticePesquisar, int indiceVertArestaPesq1, int indiceVertArestaPesq2, int numComponentesConexas, ArrayList<Set<Vertice>> verticesDaComponente) throws IOException{
 
         String nomeArquivo = "DadosGrafo.txt";
@@ -541,11 +603,13 @@ public class Grafo{
         fw1.close();
     }
 
-
-
-
-
-
+    /**
+     * Gera os arquivos das arestas de retorno
+     * @param componentesConexas
+     * @param VertsDasArestasRetorno
+     * @param VertsDasArestasBusca
+     * @throws IOException
+     */
     public void GerarArquivoBuscaEArestasRetorno(ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas, Set<Vertice> VertsDasArestasRetorno, Set<Vertice> VertsDasArestasBusca) throws IOException {
 
         String nomeArquivo1 = "GrafoBuscaProfundidade.txt";
@@ -587,6 +651,11 @@ public class Grafo{
 
     }
 
+    /**
+     * Lê um arquivo .JSON advindo do site PAAD Grafos
+     * e transforma na entrada padrão da biblioteca
+     * @throws IOException
+     */
     public void LeituraDeJSON() throws IOException {
         String nomeArquivo = "Grafo.json";
         String linha;
@@ -658,11 +727,9 @@ public class Grafo{
                     bw1.write(idsRotulos.get(vFinale.get(i+1)) + " " );
                 }
                 if(vFinale.get(i).equals("label")){
-                    if (vFinale.get(i+1).equals("3")){
-                        bw1.write("ALOALO\n");
-                    } else {
-                        bw1.write(vFinale.get(i + 1) + "\n");
-                    }
+
+                    bw1.write(vFinale.get(i + 1) + "\n");
+
                 }
             }
         }
