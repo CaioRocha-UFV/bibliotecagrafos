@@ -18,6 +18,7 @@ public class Interface {
 
         String arquivo;
         String escolha;
+        boolean linux = false;
         Grafo shy = new Grafo();
         Scanner entrada = new Scanner(System.in);
         int indiceVerticeGeral;
@@ -31,7 +32,15 @@ public class Interface {
         System.out.println("|       Guilherme Sergio e Maria Theresa       |");
         System.out.println(" ----------------------------------------------");
 
-        System.out.println("> Insira o número correspondente a sua escolha e pressione Enter\n Escolha forma de entrada:");
+        System.out.println("> Insira o valor que corresponde a sua escolha e pressione Enter\n Escolha seu OS:");
+        System.out.println("  (1) Windows\n  (2) Linux\n>> ");
+        escolha = entrada.nextLine();
+
+        if (escolha.equals("2")){
+            linux = true;
+        }
+
+        System.out.println("Escolha a forma de entrada:");
         System.out.println("   |Para a entrada automática, será levada em consideração: \n" +
                            "   |          Nome do arquivo: Grafo.txt\n" +
                            "   |          Vértice de teste: 1\n"+
