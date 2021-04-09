@@ -4,6 +4,9 @@ import java.io.*;
 import java.util.*;
 
 import com.bibliotecagrafos.vertice.Vertice;
+
+//import jdk.javadoc.internal.doclets.formats.html.SourceToHTMLConverter;
+
 import com.bibliotecagrafos.aresta.Aresta;
 import com.bibliotecagrafos.algoritmos.BuscaEmProfundidade;
 import com.bibliotecagrafos.algoritmos.Dijkstra;
@@ -27,6 +30,110 @@ public class Grafo{
         this.grafo = grafo;
     }
 
+    /*
+
+     */
+    public HashMap<Integer, Vertice> GerarGrafoAuto(String fileName)  throws FileNotFoundException, IOException{
+        BufferedReader reader = null;
+
+        try {
+            String currentLine;
+            String linhaQntVertices = "DIMENSION:";
+            int numDeVertices = 0;
+            HashMap<Integer, Vertice> novoGrafo;
+            int i;
+            // Setup da leitura do Arquivo
+            reader = new BufferedReader(new FileReader( fileName));
+
+
+            /*
+                Passando pelas linhas que não são dados dos vértices
+             */
+            do {
+                currentLine = reader.readLine();
+                String tokens[] = currentLine.split(" ");
+
+                if (tokens[0].equals(linhaQntVertices)){
+                    numDeVertices = Integer.parseInt(tokens[1]);
+                }
+
+            } while (! currentLine.equals("NODE_COORD_SECTION"));
+
+            novoGrafo  = new HashMap<Integer, Vertice>(numDeVertices);
+
+
+            // Inicio da Leitura
+            while ((currentLine = reader.readLine()) != null){
+               
+                //System.out.println(currentLine);
+                // Leitura da Linha
+                String tokens[] = currentLine.split(" ");
+
+                if (tokens[0].equals("EOF")){
+                    break;
+                }
+
+                // Fragmentação dos valores
+                int index1 = Integer.parseInt(tokens[0]);
+                double coordenadaX = Double.parseDouble(tokens[1]);
+                double coordenadaY = Double.parseDouble(tokens[2]);
+                float peso;
+                Vertice vertice1;
+                Vertice vertice2;
+
+                // Adiciona os vértices na lista
+                vertice1 = AdicionaVertice(novoGrafo, index1, coordenadaX, coordenadaY);
+
+                for (int j : novoGrafo.keySet()){
+
+                    if (j != index1){
+
+                        vertice2 = AdicionaVertice(novoGrafo, j);
+                        peso = (float)CalcularPeso(vertice1, vertice2);
+
+                        if (vertice1.EhvizinhoDe(vertice2) == false){
+                            // Adiciona as arestas
+                            Aresta arest1 = vertice1.AdicionarVizinho(vertice2, peso);
+                            Aresta arest2 = vertice2.AdicionarVizinho(vertice1, peso);
+                            arest1.setEquivalente(arest2);
+                            arest2.setEquivalente(arest1);
+                        }
+
+                    }
+
+                }
+            }
+            return novoGrafo;
+
+        } finally{
+            try{
+                if (reader != null)
+                    reader.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+
+    public static double CalcularPeso(Vertice vert1, Vertice vert2){
+
+        double distancia_X, distancia_Y, distanciaEntreVertices;
+
+        distancia_X = vert1.getCoordenadaX() - vert2.getCoordenadaX();
+        distancia_Y = vert1.getCoordenadaY() - vert2.getCoordenadaY();
+
+        distanciaEntreVertices = Math.sqrt((distancia_X*distancia_X) + (distancia_Y*distancia_Y));
+
+        return Math.ceil(distanciaEntreVertices);
+
+    }
+
+
+
+
+
+
     /**
      * Acessa o Grafo
      * @return HashMap de vertices
@@ -43,7 +150,8 @@ public class Grafo{
      */
     public void CriarGrafo(String fileName) throws FileNotFoundException, IOException{
         grafo = new HashMap<Integer, Vertice>();
-        grafo = LeituraDeArquivo(fileName);
+        //grafo = LeituraDeArquivo(fileName);
+        grafo = GerarGrafoAuto(fileName);
     }
 
     /**
@@ -155,6 +263,28 @@ public class Grafo{
         if (novoGrafo.containsKey(newIndex) == false){
             // Adiciona-o no grafo
             Vertice novoVertice = new Vertice(newIndex);
+            novoGrafo.put(newIndex, novoVertice);
+            // Retorna o vertice adicionado
+            return novoVertice;
+        }
+
+        // Caso o vértice já esteja no grafo, retorna o vértice
+        return novoGrafo.get(newIndex);
+    }
+
+    /**
+     * Cria e Adiciona um vértice em um Grafo dado
+     * @param novoGrafo
+     * @param newIndex
+     * @param coordX
+     * @param coordY
+     * @return O vértice adicionado (ou que ja estava)
+     */
+    static Vertice AdicionaVertice(HashMap<Integer, Vertice> novoGrafo, int newIndex, double coordX, double coordY){
+        // Se o vértice não estiver no grafo
+        if (novoGrafo.containsKey(newIndex) == false){
+            // Adiciona-o no grafo
+            Vertice novoVertice = new Vertice(newIndex, coordX, coordY);
             novoGrafo.put(newIndex, novoVertice);
             // Retorna o vertice adicionado
             return novoVertice;

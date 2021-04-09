@@ -7,6 +7,8 @@ public class Vertice {
     int index;
     boolean marcado;
     ArrayList<Aresta> vizinhos;
+    double coordenadaX;
+    double coordenadaY;
 
     // Construtor a partir de um index
     // Inicia a Array de vizinhos e desmarcado
@@ -16,9 +18,24 @@ public class Vertice {
         vizinhos = new ArrayList<Aresta>();
     }
 
+    public Vertice(int index, double coordX, double coordY){
+        this.index = index;
+        this.coordenadaX = coordX;
+        this.coordenadaY = coordY;
+        this.vizinhos = new ArrayList<Aresta>();
+    }
+
     // Acessa o index
     public int getIndex(){
         return index;
+    }
+
+    public double getCoordenadaX() {
+        return coordenadaX;
+    }
+
+    public double getCoordenadaY() {
+        return coordenadaY;
     }
 
     // Acessa a Array de vizinhos
