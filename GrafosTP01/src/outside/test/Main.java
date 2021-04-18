@@ -23,5 +23,6 @@ public class Main {
         System.out.println("Ordem o grafo: " + shy.Ordem());
         System.out.println("Tamanho grafo: " + shy.Tamanho());
         System.out.println(shy.GrauMaximo() + " " + shy.GrauMinimo());
+        shy.PrimeiroMetodo();
     }
 }

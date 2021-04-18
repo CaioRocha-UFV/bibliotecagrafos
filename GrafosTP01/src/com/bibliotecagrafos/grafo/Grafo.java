@@ -10,6 +10,10 @@ import com.bibliotecagrafos.vertice.Vertice;
 import com.bibliotecagrafos.aresta.Aresta;
 import com.bibliotecagrafos.algoritmos.BuscaEmProfundidade;
 import com.bibliotecagrafos.algoritmos.Dijkstra;
+import com.bibliotecagrafos.algoritmos.metodo1;
+import com.bibliotecagrafos.algoritmos.*;
+
+
 
 public class Grafo{
     private HashMap<Integer, Vertice> grafo;
@@ -866,4 +870,19 @@ public class Grafo{
         br.close();
         fr.close();
     }
+
+
+    public void PrimeiroMetodo(){
+
+        ArrayList<Aresta> listaArestas = metodo1.nearestNeighbor(this.grafo);
+
+        metodo1 teste = new metodo1();
+
+        teste.Optimaztion_2Opt(listaArestas);
+    }
+
+
+
+
+
 }
