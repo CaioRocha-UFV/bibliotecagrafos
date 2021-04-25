@@ -874,11 +874,11 @@ public class Grafo{
 
     public void PrimeiroMetodo(){
 
-        ArrayList<Aresta> listaArestas = metodo1.nearestNeighbor(this.grafo);
+        ArrayList<Vertice> listaVertice = metodo1.nearestNeighbor(this.grafo);
 
         metodo1 teste = new metodo1();
 
-        teste.Optimaztion_2Opt(listaArestas);
+        teste.Optimization_2Opt(listaVertice);
     }
 
 

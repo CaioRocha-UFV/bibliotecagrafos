@@ -3,28 +3,26 @@ package com.bibliotecagrafos.algoritmos;
 import java.util.*;
 
 import com.bibliotecagrafos.vertice.Vertice;
-
 import com.bibliotecagrafos.aresta.Aresta;
 
 public class metodo1 {
 
 
-
-    public double CalcularCustoCiclo(ArrayList<Aresta> rotaArestas){
+    public double CalcularCustoRotaVertices(ArrayList<Vertice> rota){
 
         double custo = 0;
 
-        for (Aresta ares : rotaArestas){
+        for (int i = 0; i < rota.size(); i += 2){
 
-            custo += ares.Peso();
+            custo += rota.get(i).ArestaCom(rota.get(i+1)).Peso();
         }
 
         return custo;
+
     }
 
 
-
-    public static ArrayList<Aresta> nearestNeighbor(HashMap<Integer, Vertice> grafo){
+    public static ArrayList<Vertice> nearestNeighbor(HashMap<Integer, Vertice> grafo){
 
         Random rand = new Random();
         int i;
@@ -40,15 +38,12 @@ public class metodo1 {
         
         int indiceVerticeAtual = rand.nextInt(grafo.size()) + 1;
         Vertice verticeAtual = grafo.get(indiceVerticeAtual);
-        Vertice primeiroVertice = grafo.get(indiceVerticeAtual);
+        //Vertice primeiroVertice = grafo.get(indiceVerticeAtual);
         
         rota.add(verticeAtual);
         verticesVisitados.add(verticeAtual);
         numeroDeVertices = grafo.size();
         
-       
-        
-
         
         while (rota.size() != numeroDeVertices){
 
@@ -76,7 +71,91 @@ public class metodo1 {
 
         }
         System.out.println("Finalizou.");
+        return rota;
+    }   
+    
 
+
+    private static ArrayList<Vertice> swap(ArrayList<Vertice> rotaVertices, int i, int j) {
+        //conducts a 2 opt swap by inverting the order of the points between i and j
+        ArrayList<Vertice> newTour = new ArrayList<>();
+
+        //take array up to first point i and add to newTour
+        int size = rotaVertices.size();
+        for (int c = 0; c <= i - 1; c++) {
+            newTour.add(rotaVertices.get(c));
+        }
+
+        //invert order between 2 passed points i and j and add to newTour
+        int dec = 0;
+        for (int c = i; c <= j; c++) {
+            newTour.add(rotaVertices.get(j - dec));
+            dec++;
+        }
+
+        //append array from point j to end to newTour
+        for (int c = j + 1; c < size; c++) {
+            newTour.add(rotaVertices.get(c));
+        }
+
+        return newTour;
+    }
+
+    public void Optimization_2Opt(ArrayList<Vertice> rotaVertices){
+            
+        ArrayList<Vertice> rotaVerticesNova;
+
+        double melhorCusto;
+        double novoMelhorCusto = 0;
+        int iteracao = 0;
+
+        melhorCusto = CalcularCustoRotaVertices(rotaVertices);
+        System.out.println("custo inicial: " + melhorCusto);
+
+        while (true){
+            
+            for (int i = 1; i < rotaVertices.size() - 2; i++){
+                for (int j = i + 1; j < rotaVertices.size() - 1; j++){
+
+                    if (rotaVertices.get(i).ArestaCom(rotaVertices.get(i-1)).Peso() + rotaVertices.get(j+1).ArestaCom(rotaVertices.get(j)).Peso() >=
+                    rotaVertices.get(i).ArestaCom(rotaVertices.get(j+1)).Peso() + rotaVertices.get(i-1).ArestaCom(rotaVertices.get(j)).Peso()){
+
+                        rotaVerticesNova = swap(rotaVertices, i, j);
+
+                        novoMelhorCusto = CalcularCustoRotaVertices(rotaVerticesNova);
+                        System.out.println("Custo novo: " + novoMelhorCusto);
+                        if (novoMelhorCusto < melhorCusto){
+                            System.out.println("Achou um melhor");
+                            rotaVertices = rotaVerticesNova;
+                            melhorCusto = novoMelhorCusto;
+                            iteracao = 0;
+                        }
+
+
+                    }
+                }
+
+            }
+            iteracao++;
+
+            if (iteracao > 10){
+                break;
+            }
+        } 
+        System.out.println("Custo apos execucao: " + melhorCusto);
+        for (Vertice vert : rotaVertices){
+
+            System.out.println("Indice: " + vert.getIndex());
+
+        }
+    }
+
+}
+
+
+
+
+        // TRECHOS PARA TESTAGEM NA CONSTRUTIVA PARA VERIFICAR SE ESTAVA PEGANDO TODAS AS CIDADES
         /*
         for (Aresta ares : verticeAtual.getVizinhos()){
 
@@ -100,64 +179,10 @@ public class metodo1 {
         }
         */
 
-        return rotaArestas;
-    }   
-    
+        // CODIGO QUE PROVALVEMENTE NÃO TEM MAIS UTILIDADE
 
-
-    public void VerificarArestasAdjacentes(int arestaSorteada_1, int arestaSorteada_2, Aresta aresta_1, Aresta aresta_2, ArrayList<Aresta> rotaArestas){
-        Random rand = new Random();
-        boolean arestasSaoAdjacentes = true;
-
-        // Selecionar duas arestas que não sejam adjacentes
-        while (arestasSaoAdjacentes){
-
-            if ((arestaSorteada_1 != arestaSorteada_2) && (!aresta_1.VerticeAlvo().equals(aresta_2.VerticeDeOrigem())) && 
-                (!aresta_2.VerticeAlvo().equals(aresta_1.VerticeDeOrigem()))){
-
-                arestasSaoAdjacentes = false;
-            }
-            else {
-                arestaSorteada_1 = rand.nextInt(rotaArestas.size());
-                arestaSorteada_2 = rand.nextInt(rotaArestas.size());
-                aresta_1 = rotaArestas.get(arestaSorteada_1);
-                aresta_2 = rotaArestas.get(arestaSorteada_2);
-
-            }
-        }
-    }
-
-    public ArrayList<Aresta> CopiarRotaArestas(ArrayList<Aresta> rotaArestas){
-
-        ArrayList<Aresta> copia = new ArrayList<>();
-
-        for (Aresta ares : rotaArestas){
-            copia.add(ares);
-        }
-
-        return copia;
-    }
-
-
-    public void Optimaztion_2Opt(ArrayList<Aresta> rotaArestas){
-
-        Random rand = new Random();
-            
-        ArrayList<Aresta> rotaArestasCopia = CopiarRotaArestas(rotaArestas);
-        
-        int arestaSorteada_1;
-        int arestaSorteada_2;
-        Aresta aresta_1;
-        Aresta aresta_2;
-        Aresta novaAresta_1 = new Aresta();
-        Aresta novaAresta_2 = new Aresta();
-        double melhorCusto;
-        double custoIteracaoAtual = 0;
-
-        melhorCusto = CalcularCustoCiclo(rotaArestas);
-        System.out.println("custo inicial: " + melhorCusto);
-
-        for (int i = 0; i < 10; i++){
+/*
+for (int i = 0; i < 10; i++){
 
 
             arestaSorteada_1 = rand.nextInt(rotaArestasCopia.size());
@@ -199,8 +224,53 @@ public class metodo1 {
             
         }
 
-        System.out.println("Custo apos execucao: " + melhorCusto);
 
+
+        public void VerificarArestasAdjacentes(int arestaSorteada_1, int arestaSorteada_2, Aresta aresta_1, Aresta aresta_2, ArrayList<Aresta> rotaArestas){
+        Random rand = new Random();
+        boolean arestasSaoAdjacentes = true;
+
+        // Selecionar duas arestas que não sejam adjacentes
+        while (arestasSaoAdjacentes){
+
+            if ((arestaSorteada_1 != arestaSorteada_2) && (!aresta_1.VerticeAlvo().equals(aresta_2.VerticeDeOrigem())) && 
+                (!aresta_2.VerticeAlvo().equals(aresta_1.VerticeDeOrigem()))){
+
+                arestasSaoAdjacentes = false;
+            }
+            else {
+                arestaSorteada_1 = rand.nextInt(rotaArestas.size());
+                arestaSorteada_2 = rand.nextInt(rotaArestas.size());
+                aresta_1 = rotaArestas.get(arestaSorteada_1);
+                aresta_2 = rotaArestas.get(arestaSorteada_2);
+
+            }
+        }
     }
 
-}
+    public ArrayList<Aresta> CopiarRotaArestas(ArrayList<Aresta> rotaArestas){
+
+        ArrayList<Aresta> copia = new ArrayList<>();
+
+        for (Aresta ares : rotaArestas){
+            copia.add(ares);
+        }
+
+        return copia;
+    }
+
+
+    public double CalcularCustoCiclo(ArrayList<Aresta> rotaArestas){
+
+        double custo = 0;
+
+        for (Aresta ares : rotaArestas){
+
+            custo += ares.Peso();
+        }
+
+        return custo;
+    }
+
+
+*/
