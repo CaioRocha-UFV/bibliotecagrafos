@@ -4,7 +4,7 @@ import java.util.*;
 import com.bibliotecagrafos.aresta.Aresta;
 
 public class Vertice {
-    int index;
+    private int index;
     boolean marcado;
     ArrayList<Aresta> vizinhos;
     double coordenadaX;
@@ -148,4 +148,5 @@ public class Vertice {
         }
         return Float.NaN;
     }
+
 }

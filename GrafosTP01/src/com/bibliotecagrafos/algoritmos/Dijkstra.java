@@ -23,7 +23,7 @@ public class Dijkstra {
     public Dijkstra (Grafo grafo){
         this.grafo = grafo;
 
-        verticesDoGrafo = grafo.Vertices();
+        verticesDoGrafo = grafo.getGrafo();
         totalDeVertices = verticesDoGrafo.size();
 
 

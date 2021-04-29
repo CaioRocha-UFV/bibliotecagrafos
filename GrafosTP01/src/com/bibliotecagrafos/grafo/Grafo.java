@@ -11,12 +11,17 @@ import com.bibliotecagrafos.aresta.Aresta;
 import com.bibliotecagrafos.algoritmos.BuscaEmProfundidade;
 import com.bibliotecagrafos.algoritmos.Dijkstra;
 import com.bibliotecagrafos.algoritmos.metodo1;
-import com.bibliotecagrafos.algoritmos.*;
-
 
 
 public class Grafo{
+
     private HashMap<Integer, Vertice> grafo;
+
+    private ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////                            FUNÇÕES GERADORAS DO GRAFO                            ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     /**
@@ -119,33 +124,6 @@ public class Grafo{
         }
     }
 
-
-    public static double CalcularPeso(Vertice vert1, Vertice vert2){
-
-        double distancia_X, distancia_Y, distanciaEntreVertices;
-
-        distancia_X = vert1.getCoordenadaX() - vert2.getCoordenadaX();
-        distancia_Y = vert1.getCoordenadaY() - vert2.getCoordenadaY();
-
-        distanciaEntreVertices = Math.sqrt((distancia_X*distancia_X) + (distancia_Y*distancia_Y));
-
-        return Math.ceil(distanciaEntreVertices);
-
-    }
-
-
-
-
-
-
-    /**
-     * Acessa o Grafo
-     * @return HashMap de vertices
-     */
-    public HashMap<Integer, Vertice> getGrafo(){
-        return grafo;
-    }
-
     /**
      * Acessa a função de Leitura de Arquivo
      * @param fileName Nome do arquivo
@@ -221,7 +199,9 @@ public class Grafo{
         }
     }
 
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////                           FUNÇÕES DE INSERÇÃO E REMOÇÃO                          ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Cria e adiciona um vértice no Grafo
      * @param newIndex Index do vértice
@@ -240,6 +220,7 @@ public class Grafo{
         // Caso o vértice já esteja no grafo, retorna o vértice
         return this.grafo.get(newIndex);
     }
+
 
     /**
      * Adiciona um vértice já criado no Grafo
@@ -304,7 +285,7 @@ public class Grafo{
      * @return
      */
     public Vertice RemoveVertice(int index){
-        Vertice v = VerticeDeIndex(index);
+        Vertice v = getVerticeByIndex(index);
 
         for (Aresta vizinho : v.getVizinhos()){
             vizinho.VerticeAlvo().RemoveVizinho(v);
@@ -316,7 +297,7 @@ public class Grafo{
     }
 
     public static ArrayList<Vertice> RemoveVertice(ArrayList<Vertice> novoGrafo ,int index){
-        Vertice v = VerticeDeIndex(novoGrafo, index);
+        Vertice v = getVerticeByIndex(novoGrafo, index);
 
         for (Aresta vizinho : v.getVizinhos()){
             vizinho.VerticeAlvo().RemoveVizinho(v);
@@ -327,18 +308,57 @@ public class Grafo{
     }
 
 
-    // Função EXTERNA
-    // Recebe:
-    // Ação: Acessa o HashMap de vertices
-    // Retorna: Um HashMap de Vertices
-    public HashMap<Integer, Vertice> Vertices(){
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////                            FUNÇÕES DE ACESSO AO GRAFO                            ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     *
+     * @return HashMap de vertices (o próprio grafo)
+     */
+    public HashMap<Integer, Vertice> getGrafo(){
         return grafo;
     }
 
-    // Função EXTERNA
-    // Recebe:
-    // Ação: Conta o total de arestas e divide por dois
-    // Retorna: O tamanho do grafo
+    /**
+     *
+     * @return HashMap de vertices (o próprio grafo)
+     */
+    public ArrayList<LinkedHashMap<Aresta, Boolean>> getComponentesConexas(){
+        if (componentesConexas.size() <= 0){
+            // Fazer busca em Profundidade
+            return BuscaEmProfundidade(1);
+        }
+
+        return componentesConexas;
+    }
+
+    /**
+     *
+     * @return um HashSet com todas as Arestas do grafo
+     */
+    public HashSet<Aresta> getHashSetArestas(){
+        if (componentesConexas.size() <= 0){
+            // Fazer busca em Profundidade
+            BuscaEmProfundidade(1);
+        }
+
+        HashSet<Aresta> arestasHS = new HashSet<>();
+
+        for (LinkedHashMap<Aresta, Boolean> componente : componentesConexas) {
+            for (Aresta a: componente.keySet()) {
+                arestasHS.add(a);
+            }
+        }
+
+        return arestasHS;
+    }
+
+    /**
+     *
+     * @return total de arestas no grafo
+     */
     public int Tamanho() {
         int numArestas = 0;
 
@@ -349,10 +369,26 @@ public class Grafo{
         return numArestas/2;
     }
 
-    // Função EXTERNA
-    // Recebe:
-    // Ação: Compara os vertices do grafo e encontra o de menor grau
-    // Retorna: o grau mínimo do grafo
+    /**
+     *
+     * @return o número de vértices no grafo
+     */
+    public int Ordem(){
+        return getNumeroDeVertices();
+    }
+
+    /**
+     * Retorna o numero de Vértices no Grafo
+     * @return
+     */
+    private int getNumeroDeVertices(){
+        return grafo.size();
+    }
+
+    /**
+     *
+     * @return o grau do vértice de menor grau do grafo
+     */
     public int GrauMinimo(){
         int grauMinimo = Integer.MAX_VALUE;
 
@@ -364,10 +400,10 @@ public class Grafo{
         return grauMinimo;
     }
 
-    // Função EXTERNA
-    // Recebe:
-    // Ação: Compara os vertices do grafo e encontra o de maior grau
-    // Retorna: o grau máximo do grafo
+    /**
+     *
+     * @return o grau do vértice de maior grau do grafo
+     */
     public int GrauMaximo(){
         int grauMaximo = 0;
 
@@ -379,12 +415,11 @@ public class Grafo{
         return grauMaximo;
     }
 
-    // Função INTERNA
-    // Recebe: Um Índice
-    // Ação: Busca um vértice pelo índice no grafo interno
-    // Retorna: Vértice encontrado
-    //            ou null caso não encontre o vértice
-    private Vertice VerticeDeIndex(int index){
+    /**
+     * @param index
+     * @return O Vertice com o index dado
+     */
+    private Vertice getVerticeByIndex(int index){
         // Busca o vértice no grafo
         Vertice vertice = grafo.get(index);
         if (vertice != null){
@@ -396,60 +431,39 @@ public class Grafo{
         return null;
     }
 
-    // Função INTERNA
-    // Recebe: Um Índice e um grafo
-    // Ação: Busca um vértice pelo índice no grafo dado
-    // Retorna: Vértice encontrado
-    //            ou null caso não encontre o vértice
-    private static Vertice VerticeDeIndex(ArrayList<Vertice> novoGrafo  ,int index){
+    /**
+     * @param index
+     * @return O Vertice com o index dado no grafo dado
+     */
+    private static Vertice getVerticeByIndex(ArrayList<Vertice> novoGrafo  , int index){
         // Busca o vértice no grafo
         Vertice vertice = novoGrafo.get(index);
         if (vertice != null){
             return vertice;
         }
 
-        // Caso nãoencontre o Grafo, retorna nulo
+        // Caso não encontre o Grafo, retorna nulo
         System.out.println("VERTICE NÃO ENCONTRADO -- Index: "+index);
         return null;
     }
 
-    /**
-     * Retorna o numero de Vértices no Grafo
-     * @return
-     */
-    private int NumeroDeVertices(){
-        return grafo.size();
-    }
 
-    /**
-     * Retorna a ordem do grafo
-     * @return
-     */
-    public int Ordem(){
-        return NumeroDeVertices();
-    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////                            FUNÇÕES DE USO DE ALGORITMOS                          ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * Busca pelo vértice através de seu index e acessa o grau
-     * @param index
-     * @return
-     */
-    public int GrauDoVerticeDeIndex(int index){
-        int grau = VerticeDeIndex(index).Grau();
-        return grau;
-    }
+    /*
+    AStar
+    public void MenorCaminhoAStar(int inicial, int fim){
+        Vertice vInicio = VerticeDeIndex(inicial);
+        Vertice vFinal = VerticeDeIndex(fim);
 
+        Astar aStar = new Astar();
 
-    /**
-     * Retorna uma String i.e.{1, 2, 4, 6} de vizinhos de um vértice dado
-     * @param index
-     * @return
-     */
-    public String StringVizinhosDoVerticeDeIndice(int index){
-        Vertice vertice = VerticeDeIndex(index);
-        String vizinhos = vertice.StringDeVizinhos();
-        return vizinhos;
+        List<Vertice> rota = aStar.EncontrarCaminho(vInicio, vFinal);
+        System.out.println(rota.stream().map(Vertice::getIndex).collect(Collectors.toList()));
     }
+    */
 
     /**
      * Aplica o algortimo de Dijkstra para encontrar o menor caminho
@@ -459,7 +473,7 @@ public class Grafo{
      * @return
      */
     public String MenorCaminhoDijkstra(int inicial, int fim){
-        Vertice vInicio = VerticeDeIndex(inicial);
+        Vertice vInicio = getVerticeByIndex(inicial);
         //Vertice vFinal = VerticeDeIndex(fim);
         Dijkstra dijkstra = new Dijkstra(this);
         dijkstra.DistanciasAPartirDoVertice(vInicio);
@@ -480,8 +494,8 @@ public class Grafo{
      * @return
      */
     public String CaminhoDoMenorCaminhoDijkstra(int inicial, int fim){
-        Vertice vInicio = VerticeDeIndex(inicial);
-        Vertice vFinal = VerticeDeIndex(fim);
+        Vertice vInicio = getVerticeByIndex(inicial);
+        Vertice vFinal = getVerticeByIndex(fim);
 
         Dijkstra dijkstra = new Dijkstra(this);
 
@@ -499,16 +513,7 @@ public class Grafo{
         return resultado;
     }
 
-    /* AStar
-    public void MenorCaminhoAStar(int inicial, int fim){
-        Vertice vInicio = VerticeDeIndex(inicial);
-        Vertice vFinal = VerticeDeIndex(fim);
 
-        Astar aStar = new Astar();
-
-        List<Vertice> rota = aStar.EncontrarCaminho(vInicio, vFinal);
-        System.out.println(rota.stream().map(Vertice::getIndex).collect(Collectors.toList()));
-    }*/
 
     /**
      * Aplica a busca em profundidade a partir de um vértice dado
@@ -518,8 +523,27 @@ public class Grafo{
     public ArrayList<LinkedHashMap<Aresta, Boolean>> BuscaEmProfundidade(int index){
         // Inicia a Busca em Profundidade no vértice dado
         System.out.println("Iniciando BuscaEmProfundidade");
-        ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade.Explorar(VerticeDeIndex(index) , grafo);
+        ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade.Explorar(getVerticeByIndex(index) , grafo);
+
+        this.componentesConexas = componentesConexas;
+
         System.out.println("Fim da BuscaEmProfundidade");
+        return componentesConexas;
+    }
+
+    /**
+     * Aplica a busca em profundidade a partir de um vértice dado
+     * @param index
+     * @return Uma ArrayList com o cada componente conexa
+     */
+    private ArrayList<LinkedHashMap<Aresta, Boolean>> ArmazenarComponentesConexas(int index){
+        // Inicia a Busca em Profundidade no vértice dado
+        //System.out.println("Iniciando BuscaEmProfundidade");
+        ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade.Explorar(getVerticeByIndex(index) , grafo);
+
+        this.componentesConexas = componentesConexas;
+
+        //System.out.println("Fim da BuscaEmProfundidade");
         return componentesConexas;
     }
 
@@ -531,6 +555,20 @@ public class Grafo{
         Vertice inicio = grafo.entrySet().stream().findFirst().get().getValue();;
         ArrayList<LinkedHashMap<Aresta, Boolean>> componentesConexas = BuscaEmProfundidade.Explorar(inicio , grafo);
         return componentesConexas.size();
+    }
+
+
+
+
+    public static double CalcularPeso(Vertice vert1, Vertice vert2){
+        double distancia_X, distancia_Y, distanciaEntreVertices;
+
+        distancia_X = vert1.getCoordenadaX() - vert2.getCoordenadaX();
+        distancia_Y = vert1.getCoordenadaY() - vert2.getCoordenadaY();
+
+        distanciaEntreVertices = Math.sqrt((distancia_X*distancia_X) + (distancia_Y*distancia_Y));
+
+        return Math.ceil(distanciaEntreVertices);
     }
 
     /**
@@ -545,7 +583,7 @@ public class Grafo{
         int numConexasFinal = 0;
 
         // Remove o vertice
-        Vertice v = VerticeDeIndex(index);
+        Vertice v = getVerticeByIndex(index);
         for (Aresta vizinho : v.getVizinhos()){
             vizinho.VerticeAlvo().RemoveVizinho(v);
         }
@@ -576,7 +614,7 @@ public class Grafo{
      * @return True caso seja uma ponte
      */
     public boolean EhPonte(int index1, int index2, int conexasInicial){
-        if (VerticeDeIndex(index1).EhvizinhoDe(VerticeDeIndex(index2)) == false){
+        if (getVerticeByIndex(index1).EhvizinhoDe(getVerticeByIndex(index2)) == false){
             return false;
         }
 
@@ -585,8 +623,8 @@ public class Grafo{
         int numConexasFinal = 0;
 
         // Armazena os devidos vertices e ao peso
-        Vertice v1 = VerticeDeIndex(index1);
-        Vertice v2 = VerticeDeIndex(index2);
+        Vertice v1 = getVerticeByIndex(index1);
+        Vertice v2 = getVerticeByIndex(index2);
         float peso;
 
         // Remove a aresta
@@ -605,6 +643,39 @@ public class Grafo{
         }
         return false;
     }
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////                             FUNÇÕES SEM CATEGORIZAÇÃO                            ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Retorna uma String i.e.{1, 2, 4, 6} de vizinhos de um vértice dado
+     * @param index index do vértice
+     * @return
+     */
+    public String getStringDeVizinhos(int index){
+        Vertice vertice = getVerticeByIndex(index);
+        String vizinhos = vertice.StringDeVizinhos();
+        return vizinhos;
+    }
+
+
+    /**
+     * Busca pelo vértice através de seu index e acessa o grau
+     * @param index
+     * @return
+     */
+    public int GrauDoVerticeDeIndex(int index){
+        int grau = getVerticeByIndex(index).Grau();
+        return grau;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////                            FUNÇÕES LIGADAS A ARQUIVOS                            ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     /**
@@ -690,8 +761,8 @@ public class Grafo{
         bw1.write("Informações gerais sobre o vértice " + indiceVerticePesquisar + ".\n");
         bw1.write("Verificação de ponte para os vértices: " + indiceVertArestaPesq1 + " " + indiceVertArestaPesq2 + ".\n");
         bw1.write("---------------------------------------------------\n");
-        bw1.write("Vizinhos de "+ indiceVerticePesquisar + ": "+ StringVizinhosDoVerticeDeIndice(indiceVerticePesquisar) + "\n");
-        bw1.write("Grau de "+ indiceVerticePesquisar + ": " + VerticeDeIndex(indiceVerticePesquisar).Grau() + "\n------------\n");
+        bw1.write("Vizinhos de "+ indiceVerticePesquisar + ": "+ getStringDeVizinhos(indiceVerticePesquisar) + "\n");
+        bw1.write("Grau de "+ indiceVerticePesquisar + ": " + getVerticeByIndex(indiceVerticePesquisar).Grau() + "\n------------\n");
         if (EhArticulacao(indiceVerticePesquisar, numComponentesConexas)){
             bw1.write("Vértice "+ indiceVerticePesquisar + " É uma articulação!" + "\n");
         } else{
@@ -705,7 +776,7 @@ public class Grafo{
                         MenorCaminhoDijkstra(indiceVerticePesquisar, indiceVertArestaPesq2) + "\n");
         bw1.write("Caminho percorrido:\n" + CaminhoDoMenorCaminhoDijkstra(indiceVerticePesquisar, indiceVertArestaPesq2) + "\n");
         bw1.write("---------------------------------------------------\n");
-        if (VerticeDeIndex(indiceVertArestaPesq1).EhvizinhoDe(VerticeDeIndex(indiceVertArestaPesq2)) == false)
+        if (getVerticeByIndex(indiceVertArestaPesq1).EhvizinhoDe(getVerticeByIndex(indiceVertArestaPesq2)) == false)
             bw1.write("A aresta " + indiceVertArestaPesq1 + "-" + indiceVertArestaPesq2 + " não existe\n");
         else {
             if (EhPonte(indiceVertArestaPesq1, indiceVertArestaPesq2, numComponentesConexas)) {
@@ -871,6 +942,15 @@ public class Grafo{
         fr.close();
     }
 
+
+
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////                                      TP 02                                       ///////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void PrimeiroMetodo(){
 
