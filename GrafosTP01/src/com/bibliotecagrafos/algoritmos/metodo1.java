@@ -112,6 +112,7 @@ public class metodo1 {
         melhorCusto = CalcularCustoRotaVertices(rotaVertices);
         System.out.println("custo inicial: " + melhorCusto);
 
+        long startTime = System.nanoTime();
         while (true){
             
             for (int i = 1; i < rotaVertices.size() - 2; i++){
@@ -133,6 +134,18 @@ public class metodo1 {
 
 
                     }
+                
+                    
+                }
+                
+                //Não sei se aqui é a melhor posição
+                long endTime = System.nanoTime();
+                long duration = (endTime - startTime);
+                
+                duration = duration/1_000_000_000;
+
+                if(duration/60 >= 3){
+                    break;
                 }
 
             }
