@@ -8,7 +8,7 @@ import com.bibliotecagrafos.aresta.Aresta;
 public class metodo1 {
 
 
-    public double CalcularCustoRotaVertices(ArrayList<Vertice> rota){
+    public static double CalcularCustoRotaVertices(ArrayList<Vertice> rota){
 
         double custo = 0;
 
@@ -70,7 +70,7 @@ public class metodo1 {
             verticesVisitados.add(verticeAtual);
 
         }
-        System.out.println("Finalizou.");
+        //System.out.println("Finalizou.");
         return rota;
     }   
     
@@ -101,7 +101,7 @@ public class metodo1 {
         return newTour;
     }
 
-    public void Optimization_2Opt(ArrayList<Vertice> rotaVertices){
+    public static double Optimization_2Opt(ArrayList<Vertice> rotaVertices){
             
         ArrayList<Vertice> rotaVerticesNova;
 
@@ -110,7 +110,7 @@ public class metodo1 {
         int iteracao = 0;
 
         melhorCusto = CalcularCustoRotaVertices(rotaVertices);
-        System.out.println("custo inicial: " + melhorCusto);
+        //System.out.println("custo inicial: " + melhorCusto);
 
         long startTime = System.nanoTime();
         while (true){
@@ -124,20 +124,14 @@ public class metodo1 {
                         rotaVerticesNova = swap(rotaVertices, i, j);
 
                         novoMelhorCusto = CalcularCustoRotaVertices(rotaVerticesNova);
-                        System.out.println("Custo novo: " + novoMelhorCusto);
+                        //System.out.println("Custo novo: " + novoMelhorCusto);
                         if (novoMelhorCusto < melhorCusto){
-                            System.out.println("Achou um melhor");
                             rotaVertices = rotaVerticesNova;
                             melhorCusto = novoMelhorCusto;
                             iteracao = 0;
                         }
-
-
                     }
-                
-                    
                 }
-                
                 //Não sei se aqui é a melhor posição
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
@@ -155,13 +149,12 @@ public class metodo1 {
                 break;
             }
         } 
-        System.out.println("Custo apos execucao: " + melhorCusto);
-        for (Vertice vert : rotaVertices){
+        //System.out.println("Custo apos execucao: " + melhorCusto);
 
-            System.out.println("Indice: " + vert.getIndex());
-
-        }
+        return melhorCusto;
     }
+
+
 
 }
 

@@ -952,13 +952,85 @@ public class Grafo{
     ///////////////////                                      TP 02                                       ///////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void PrimeiroMetodo(){
 
-        ArrayList<Vertice> listaVertice = metodo1.nearestNeighbor(this.grafo);
+    public void GerarArquivoCicloHamiltoniano(ArrayList<Vertice> listaVertice) throws IOException {
 
-        metodo1 teste = new metodo1();
+        String nomeArquivo1 = "CicloHamiltoniano.txt";
 
-        teste.Optimization_2Opt(listaVertice);
+        // Arquivo que vai armazenar o grafo resultante da busca em profundidade
+        FileWriter fw1 = new FileWriter(nomeArquivo1, false);
+        BufferedWriter bw1 = new BufferedWriter(fw1);
+        bw1.write(listaVertice.size() + "\n");
+
+        for (int i = 0; i < listaVertice.size(); i+=2){
+
+            bw1.write(listaVertice.get(i).getIndex() + " " + listaVertice.get(i+1).getIndex() + " " + listaVertice.get(i).ArestaCom(listaVertice.get(i+1)).Peso());
+            bw1.write("\n");
+
+        }
+
+        System.out.println("ARQUIVO GERADO!");
+
+        //
+        bw1.close();
+        fw1.close();
+
+    }
+
+
+
+
+    public void PrimeiroMetodo() throws IOException{
+
+        int interacoes = 30;
+        ArrayList<Vertice> listaVertice;
+        ArrayList<Vertice> cicloMelhorCusto = new ArrayList<>();
+        double custo;
+        double melhorCusto = Double.MAX_VALUE;
+        double piorCusto = Double.MIN_VALUE;
+        double mediaCusto = 0;
+        double desvioPadraoCusto = 0;
+        double[] vetorCustos = new double[30];
+
+        for (int i = 0; i < interacoes; i ++){
+            
+            listaVertice = metodo1.nearestNeighbor(this.grafo);
+
+            custo = metodo1.Optimization_2Opt(listaVertice);
+
+            System.out.println("Foi: " + i);
+            // Pegando o menor custo
+            if (custo < melhorCusto){
+                melhorCusto = custo;
+                cicloMelhorCusto = listaVertice;
+            }
+            // Pegando o maior custo
+            if (custo > piorCusto){
+                piorCusto = custo;
+            }
+
+            mediaCusto += custo;
+            vetorCustos[i] = custo;
+        }
+
+        mediaCusto /= interacoes;
+
+        for (int i = 0; i < interacoes; i++){
+            desvioPadraoCusto += Math.pow((vetorCustos[i]-mediaCusto), 2);
+        }
+
+        desvioPadraoCusto /= interacoes;
+
+        desvioPadraoCusto = Math.sqrt(desvioPadraoCusto);
+
+        System.out.println("Melhor:     " + melhorCusto);
+        System.out.println("Pior:       " + piorCusto);
+        System.out.format("Media:  %.3f\n", mediaCusto);
+        System.out.format("Desvio Padrao: %.3f\n", desvioPadraoCusto);
+
+        GerarArquivoCicloHamiltoniano(cicloMelhorCusto);
+
+        
     }
 
 
