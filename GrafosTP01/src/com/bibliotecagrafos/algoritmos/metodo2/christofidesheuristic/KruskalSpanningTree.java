@@ -1,52 +1,47 @@
-package com.bibliotecagrafos.algoritmos.modelo2.christofidesheuristic;
+package com.bibliotecagrafos.algoritmos.metodo2.christofidesheuristic;
 
 import com.bibliotecagrafos.aresta.Aresta;
 import com.bibliotecagrafos.grafo.Grafo;
 import com.bibliotecagrafos.vertice.Vertice;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class KruskalSpanningTree {
     //https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/
 
     /**
      *
-     * @param vertice
      * @param grafo
      * @return Um HashSet com as arestas da spanning tree mínima encontrada
      */
-    public static void KuskalMSP(Vertice vertice, Grafo grafo){
+    public static Aresta[] KuskalMSP(Grafo grafo){
 
         int V = grafo.Ordem();
         int E = grafo.Tamanho();
 
         int i = 0;
-        int e = 0;
-
         HashSet<Aresta> arestas = grafo.getHashSetArestas();
-        HashSet<Aresta> result = new HashSet<>();
+        Aresta[] edge = new Aresta[arestas.size()];
 
-        PriorityQueue<Aresta> arestasPQ = new PriorityQueue<>(arestas);
+        for (Aresta a : arestas) {
+            edge[i++] = a;
+        }
 
         // Armazena o resultado final
-        //Aresta[] result = new Aresta[V];
+        Aresta[] result = new Aresta[V];
 
         // An index variable, used for result[]
-        //int e = 0;
-
+        int e = 0;
+        i = 0;
         // An index variable, used for sorted edges
-        //int i = 0;
-        //for (i = 0; i < V; ++i)
-        //    result[i] = new Aresta();
+        for (i = 0; i < V; ++i)
+            result[i] = new Aresta();
 
         // Step 1:  Sort all the edges in non-decreasing
         // order of their weight.  If we are not allowed to
         // change the given graph, we can create a copy of
         // array of edges
-        //Arrays.sort(edge);
+        Arrays.sort(edge);
 
 
         // Allocate memory for creating V subsets
@@ -69,10 +64,10 @@ public class KruskalSpanningTree {
         {
             // Step 2: Pick the smallest edge. And increment
             // the index for next iteration
-            Aresta next_edge = arestasPQ.poll();
+            Aresta next_edge = edge[i++];
 
-            int x = find(subsets, next_edge.src);
-            int y = find(subsets, next_edge.dest);
+            int x = find(subsets, next_edge.VerticeDeOrigem().getIndex()-1);
+            int y = find(subsets, next_edge.VerticeAlvo().getIndex()-1);
 
             // If including this edge does't cause cycle,
             // include it in result and increment the index
@@ -86,18 +81,7 @@ public class KruskalSpanningTree {
 
         // print the contents of result[] to display
         // the built MST
-        System.out.println("Following are the edges in "
-                + "the constructed MST");
-        int minimumCost = 0;
-        for (i = 0; i < e; ++i)
-        {
-            System.out.println(result[i].src + " -- "
-                    + result[i].dest
-                    + " == " + result[i].weight);
-            minimumCost += result[i].weight;
-        }
-        System.out.println("Minimum Cost Spanning Tree "
-                + minimumCost);
+        return result;
 
     }
 

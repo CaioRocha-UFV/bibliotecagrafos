@@ -3,13 +3,14 @@ package com.bibliotecagrafos.grafo;
 import java.io.*;
 import java.util.*;
 
+import com.bibliotecagrafos.algoritmos.metodo2.christofidesheuristic.KruskalSpanningTree;
 import com.bibliotecagrafos.vertice.Vertice;
 
 //import jdk.javadoc.internal.doclets.formats.html.SourceToHTMLConverter;
 
 import com.bibliotecagrafos.aresta.Aresta;
 import com.bibliotecagrafos.algoritmos.BuscaEmProfundidade;
-import com.bibliotecagrafos.algoritmos.Dijkstra;
+import com.bibliotecagrafos.algoritmos.pathfinding.Dijkstra;
 import com.bibliotecagrafos.algoritmos.metodo1;
 
 
@@ -28,7 +29,7 @@ public class Grafo{
      * Construtor vazio
      */
     public Grafo(){
-
+        componentesConexas = new ArrayList<>();
     }
 
     /**
@@ -132,8 +133,12 @@ public class Grafo{
      */
     public void CriarGrafo(String fileName) throws FileNotFoundException, IOException{
         grafo = new HashMap<Integer, Vertice>();
-        //grafo = LeituraDeArquivo(fileName);
-        grafo = GerarGrafoAuto(fileName);
+        if (fileName.substring(fileName.length()-4).equals(".tsp")) {
+            grafo = GerarGrafoAuto(fileName); // ARQUIVO TSP
+        } else if (fileName.substring(fileName.length()-4).equals(".txt")) {
+            grafo = LeituraDeArquivo(fileName); // ARQUIVO TXT
+        }
+
     }
 
     /**
@@ -464,6 +469,23 @@ public class Grafo{
         System.out.println(rota.stream().map(Vertice::getIndex).collect(Collectors.toList()));
     }
     */
+
+    public void PrintMST() {
+        Aresta[] mst = KruskalSpanningTree.KuskalMSP(this);
+
+        System.out.println("Following are the edges in "
+                + "the constructed MST");
+        int minimumCost = 0;
+        for (int i = 0; i < mst.length-1; ++i)
+        {
+            System.out.println(mst[i].VerticeDeOrigem().getIndex() + " -- "
+                    + mst[i].VerticeAlvo().getIndex()
+                    + " == " + mst[i].Peso());
+            minimumCost += mst[i].Peso();
+        }
+        System.out.println("Minimum Cost Spanning Tree "
+                + minimumCost);
+    }
 
     /**
      * Aplica o algortimo de Dijkstra para encontrar o menor caminho
@@ -1032,8 +1054,6 @@ public class Grafo{
 
         
     }
-
-
 
 
 

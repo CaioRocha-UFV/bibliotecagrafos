@@ -3,7 +3,7 @@ package com.bibliotecagrafos.aresta;
 import java.util.*;
 import com.bibliotecagrafos.vertice.Vertice;
 
-public class Aresta implements Comparator<Aresta> {
+public class Aresta implements Comparator<Aresta>, Comparable<Aresta> {
     // O peso default é 1
     float peso = 1;
     Vertice verticeOrigem;
@@ -55,5 +55,18 @@ public class Aresta implements Comparator<Aresta> {
 
     public boolean EhEquivalenteA(Aresta aresta2){
         return (aresta2 == equivalente);
+    }
+
+    @Override
+    public int compareTo(Aresta arestaComparada) {
+        if (this.peso < arestaComparada.peso){
+            return -1;
+        }
+
+        if (this.peso > arestaComparada.peso){
+            return 1;
+        }
+
+        return 0;
     }
 }

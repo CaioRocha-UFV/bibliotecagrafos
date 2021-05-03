@@ -1,4 +1,4 @@
-package com.bibliotecagrafos.algoritmos;
+package com.bibliotecagrafos.algoritmos.pathfinding;
 
 
 import java.util.*;

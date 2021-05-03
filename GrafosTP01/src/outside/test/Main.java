@@ -18,11 +18,13 @@ public class Main {
         Scanner entrada = new Scanner(System.in);
 
         System.out.println("Comecando a criar o grafo.");
-        shy.CriarGrafo("berlin52.tsp");
+        //shy.CriarGrafo("berlin52.tsp");
+        shy.CriarGrafo("grafoTeste.txt");
         System.out.println("Leitura do grafo encerrada.");
         System.out.println("Ordem o grafo: " + shy.Ordem());
         System.out.println("Tamanho grafo: " + shy.Tamanho());
         System.out.println(shy.GrauMaximo() + " " + shy.GrauMinimo());
-        shy.PrimeiroMetodo();
+        //shy.PrimeiroMetodo();
+        shy.PrintMST();
     }
 }
