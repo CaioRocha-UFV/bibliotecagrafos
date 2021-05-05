@@ -3,15 +3,16 @@ package com.bibliotecagrafos.grafo;
 import java.io.*;
 import java.util.*;
 
+import com.bibliotecagrafos.algoritmos.metodo2.christofidesheuristic.EdmondsPerfectMatching;
 import com.bibliotecagrafos.algoritmos.metodo2.christofidesheuristic.KruskalSpanningTree;
 import com.bibliotecagrafos.vertice.Vertice;
 
 //import jdk.javadoc.internal.doclets.formats.html.SourceToHTMLConverter;
 
 import com.bibliotecagrafos.aresta.Aresta;
-import com.bibliotecagrafos.algoritmos.BuscaEmProfundidade;
+import com.bibliotecagrafos.algoritmos.DepthFirstSearch.BuscaEmProfundidade;
 import com.bibliotecagrafos.algoritmos.pathfinding.Dijkstra;
-import com.bibliotecagrafos.algoritmos.metodo1;
+import com.bibliotecagrafos.algoritmos.metodo1.metodo1;
 
 
 public class Grafo{
@@ -360,6 +361,23 @@ public class Grafo{
         return arestasHS;
     }
 
+    public ArrayList<Aresta> getArrayListArestas(){
+        if (componentesConexas.size() <= 0){
+            // Fazer busca em Profundidade
+            BuscaEmProfundidade(1);
+        }
+
+        ArrayList<Aresta> arestasAL = new ArrayList<>();
+
+        for (LinkedHashMap<Aresta, Boolean> componente : componentesConexas) {
+            for (Aresta a: componente.keySet()) {
+                arestasAL.add(a);
+            }
+        }
+
+        return arestasAL;
+    }
+
     /**
      *
      * @return total de arestas no grafo
@@ -485,6 +503,18 @@ public class Grafo{
         }
         System.out.println("Minimum Cost Spanning Tree "
                 + minimumCost);
+    }
+    
+    public void Emparelhamento(){
+        /*Aresta[] mst = KruskalSpanningTree.KuskalMSP(this);
+        Vertice[] vGImpar = new Vertice[mst.length+1];
+        for (int i = 0; i < mst.length; i++) {
+
+        }*/
+        EdmondsPerfectMatching epm = new EdmondsPerfectMatching();
+        epm.ChristofidesEmparelhar(this);
+
+
     }
 
     /**

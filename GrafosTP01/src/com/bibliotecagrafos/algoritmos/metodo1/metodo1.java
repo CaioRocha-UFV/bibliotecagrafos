@@ -1,4 +1,4 @@
-package com.bibliotecagrafos.algoritmos;
+package com.bibliotecagrafos.algoritmos.metodo1;
 
 import java.util.*;
 

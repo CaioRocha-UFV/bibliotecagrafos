@@ -26,5 +26,6 @@ public class Main {
         System.out.println(shy.GrauMaximo() + " " + shy.GrauMinimo());
         //shy.PrimeiroMetodo();
         shy.PrintMST();
+        shy.Emparelhamento();
     }
 }

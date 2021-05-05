@@ -6,7 +6,7 @@ import com.bibliotecagrafos.vertice.Vertice;
 
 import java.util.*;
 
-public class KruskalSpanningTree {
+public abstract class KruskalSpanningTree {
     //https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/
 
     /**
@@ -79,7 +79,6 @@ public class KruskalSpanningTree {
             // Else discard the next_edge
         }
 
-        // print the contents of result[] to display
         // the built MST
         return result;
 

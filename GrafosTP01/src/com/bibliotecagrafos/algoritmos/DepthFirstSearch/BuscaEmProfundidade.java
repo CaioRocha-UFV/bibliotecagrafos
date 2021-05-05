@@ -1,4 +1,4 @@
-package com.bibliotecagrafos.algoritmos;
+package com.bibliotecagrafos.algoritmos.DepthFirstSearch;
 
 import java.util.*;
 import com.bibliotecagrafos.vertice.Vertice;
