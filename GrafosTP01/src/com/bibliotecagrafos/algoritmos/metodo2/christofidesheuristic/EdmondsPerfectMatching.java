@@ -18,14 +18,14 @@ import java.util.*;
 public class EdmondsPerfectMatching {
     //https://sites.google.com/site/indy256/algo/edmonds_matching
 
-    public void ChristofidesEmparelhar(Grafo grafo){
+    public void ChristofidesEmparelhar(Aresta[] arestas){
 
         EdmondBlossomMaxMatch dsp = new EdmondBlossomMaxMatch();
 
         System.out.println("************** Start Graph "
                  + "******************************");
 
-        dsp.readNextGraph(grafo);
+        dsp.readNextGraph(arestas);
         long startTime = System.currentTimeMillis();
         dsp.edmondExec();
         long endTime = System.currentTimeMillis();
@@ -386,24 +386,34 @@ public class EdmondsPerfectMatching {
             node.type = type;
         }
 
-
-        int readTotalGraphCount(Grafo grafo){
-            return grafo.Ordem();
-        }
-
-        void readNextGraph(Grafo grafo) {
+        void readNextGraph(Aresta[] arestas) {
             try {
+                HashSet<Integer> verts = new HashSet<>();
+                int nodesCount = 0;
 
-                int nodesCount = grafo.Ordem();
-                int edgesCount = grafo.Tamanho();
+                for (int i = 0; i < arestas.length-1; ++i) {
+                    Aresta a  = arestas[i];
+                    int origin = a.VerticeDeOrigem().getIndex();
+                    int end = a.VerticeAlvo().getIndex();
+
+                    if (verts.contains(origin) == false){
+                        verts.add(origin);
+                        nodesCount++;
+                    }
+
+                    if (verts.contains(end) == false){
+                        verts.add(end);
+                        nodesCount++;
+                    }
+                }
+
+                int edgesCount = arestas.length-1;
                 g = new Graph();
                 g.nodeCount = nodesCount;
                 initGraph();
-
-                ArrayList<Aresta> arestas = new ArrayList<>(grafo.getArrayListArestas());
-                for (int k = 0; k < arestas.size(); k++) {
-                    int u = arestas.get(k).VerticeDeOrigem().getIndex();
-                    int v = arestas.get(k).VerticeAlvo().getIndex();
+                for (int k = 0; k < edgesCount; k++) {
+                    int u = arestas[k].VerticeDeOrigem().getIndex();
+                    int v = arestas[k].VerticeAlvo().getIndex();
                     createNode(u, v);
                 }
             } catch (Exception e) {
@@ -445,8 +455,8 @@ public class EdmondsPerfectMatching {
             for (MNode node : g.nodes) {
                 if (node.matchedWith == null)
                     continue;
-                strBuild.append("Matched " + node.label + " : "
-                        + node.matchedWith.label + "\t");
+                strBuild.append("Matched " + (node.label+1) + " : "
+                        + (node.matchedWith.label+1) + "\t");
                 matches++;
             }
             strBuild.append("\n\nTotal Nodes Matched " + (matches) + " \t");

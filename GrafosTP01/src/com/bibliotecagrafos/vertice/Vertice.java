@@ -99,7 +99,8 @@ public class Vertice {
             this.vizinhos.add(novoVizinho);
             return novoVizinho;
         }
-        return null;
+
+        return getArestaCom(vertice2);
     }
 
     // Recebe: Um értice
@@ -114,6 +115,17 @@ public class Vertice {
             }
         }
         return false;
+    }
+
+    public Aresta getArestaCom(Vertice vertice2){
+        // Para cada aresta do Vertice1
+        for (Aresta aresta : this.vizinhos){
+            if (aresta.VerticeAlvo().equals(vertice2)){
+                // Se o vertice alvo é o Vertice2, retorna
+                return aresta;
+            }
+        }
+        return null;
     }
 
 

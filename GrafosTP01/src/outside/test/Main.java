@@ -1,7 +1,6 @@
 package outside.test;
 
 import com.bibliotecagrafos.grafo.Grafo;
-import outside.test.*;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -19,13 +18,13 @@ public class Main {
 
         System.out.println("Comecando a criar o grafo.");
         //shy.CriarGrafo("berlin52.tsp");
-        shy.CriarGrafo("grafoTeste.txt");
+        shy.CriarGrafo("video.txt");
         System.out.println("Leitura do grafo encerrada.");
         System.out.println("Ordem o grafo: " + shy.Ordem());
         System.out.println("Tamanho grafo: " + shy.Tamanho());
         System.out.println(shy.GrauMaximo() + " " + shy.GrauMinimo());
         //shy.PrimeiroMetodo();
-        shy.PrintMST();
-        shy.Emparelhamento();
+        //shy.ChristofidesAlgo();
+        shy.TestChristofides();
     }
 }

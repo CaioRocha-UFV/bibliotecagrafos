@@ -3,6 +3,7 @@ package com.bibliotecagrafos.grafo;
 import java.io.*;
 import java.util.*;
 
+import com.bibliotecagrafos.algoritmos.metodo2.christofidesheuristic.Christofides;
 import com.bibliotecagrafos.algoritmos.metodo2.christofidesheuristic.EdmondsPerfectMatching;
 import com.bibliotecagrafos.algoritmos.metodo2.christofidesheuristic.KruskalSpanningTree;
 import com.bibliotecagrafos.vertice.Vertice;
@@ -488,6 +489,10 @@ public class Grafo{
     }
     */
 
+    public void ChristofidesAlgo(){
+        Christofides.Christofides(this);
+    }
+
     public void PrintMST() {
         Aresta[] mst = KruskalSpanningTree.KuskalMSP(this);
 
@@ -512,7 +517,7 @@ public class Grafo{
 
         }*/
         EdmondsPerfectMatching epm = new EdmondsPerfectMatching();
-        epm.ChristofidesEmparelhar(this);
+        //epm.ChristofidesEmparelhar(this);
 
 
     }
@@ -1086,5 +1091,13 @@ public class Grafo{
     }
 
 
+    public void TestChristofides() {
 
+        Christofides.Christofides(this);
+
+        /*
+        EdmondsPerfectMatching epm = new EdmondsPerfectMatching();
+        epm.ChristofidesEmparelhar(getArrayListArestas().toArray(new Aresta[0]));
+        */
+    }
 }
