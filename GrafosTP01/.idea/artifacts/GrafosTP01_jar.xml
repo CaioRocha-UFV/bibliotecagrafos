@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="GrafosTP01:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/GrafosTP01_jar</output-path>
-    <root id="archive" name="GrafosTP01.jar">
-      <element id="module-output" name="GrafosTP01" />
-    </root>
-  </artifact>
-</component>
