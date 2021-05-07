@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Vector;
 
 public class Christofides {
 
@@ -110,9 +111,17 @@ public class Christofides {
 
 
         //Euler path
-        EulerianPath.findpath(mstUniaoMatching, grafo);
+        Vector<Integer> euPath = EulerianPath.findpath(mstUniaoMatching, grafo);
 
         //Shortcut
+        ArrayList<Vertice> resultado = Shortcut(euPath, grafo);
+
+        System.out.print(resultado.get(0).getIndex() + " --> ");
+        for(Vertice v: resultado){
+            if(resultado.indexOf(v) != 0)
+                System.out.print(v.getIndex() + " --> ");
+        }
+        System.out.println(resultado.get(resultado.size() - 1).getIndex());
     }
 
     private static ArrayList<Aresta> SubGrafoDeImpares(ArrayList<Integer> impares, Grafo grafo){
@@ -137,5 +146,22 @@ public class Christofides {
 
         return arestas;
     }
+
+    private static ArrayList<Vertice> Shortcut(Vector<Integer> euPath, Grafo grafo){
+        Boolean[] visitados = new Boolean[grafo.Ordem()];
+        Arrays.fill(visitados, false);
+        ArrayList<Vertice> cicloHam = new ArrayList();
+
+        for(int k: euPath){
+            if(!visitados[k - 1]){
+                cicloHam.add(grafo.getGrafo().get(k));
+                visitados[k - 1] = true;
+            }
+        }
+
+        cicloHam.add(grafo.getGrafo().get(euPath.get(0)));
+
+        return cicloHam;
+    }    
 }
 

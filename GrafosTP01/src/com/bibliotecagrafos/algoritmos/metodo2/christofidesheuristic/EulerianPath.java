@@ -14,32 +14,9 @@ import java.util.Vector;
     // Function to find out the path
     // It takes the adjacency matrix
     // representation of the graph as input
-    static void findpath(ArrayList<Aresta> arestas, Grafo grafo)
+    static Vector<Integer> findpath(ArrayList<Aresta> arestas, Grafo grafo)
     {
-        //Vector<Integer> numofadj = new Vector<>();
-
-        // Find out number of edges each vertex has
-       /*  for (int i = 0; i < n; i++)
-            numofadj.add(accumulate(graph[i], 0));
- */
-        /* // Find out how many vertex has odd number edges
-        int startPoint = 0, numofodd = 0;
-        for (int i = n - 1; i >= 0; i--)
-        {
-            if (numofadj.elementAt(i) % 2 == 1)
-            {
-                numofodd++;
-                startPoint = i;
-            }
-        }
-
-        // If number of vertex with odd number of edges
-        // is greater than two return "No Solution".
-        if (numofodd > 2)
-        {
-            System.out.println("No Solution");
-            return;
-        } */
+        //Condição necessaria e suficiente não precisa ser verificada, pelo menos eu acho
 
         // If there is a path find the path
         // Initialize empty stack and path
@@ -86,6 +63,8 @@ import java.util.Vector;
         for (int ele : path)
             System.out.print(ele + " -> ");
         System.out.println(cur);
+
+        return path;
     }
 
     private static boolean contemAresta(ArrayList<Aresta> arestas, int cur){
