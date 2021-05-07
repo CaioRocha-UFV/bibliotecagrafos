@@ -18,7 +18,27 @@ import java.util.*;
 public class EdmondsPerfectMatching {
     //https://sites.google.com/site/indy256/algo/edmonds_matching
 
-    public void ChristofidesEmparelhar(Aresta[] arestas){
+    ArrayList<Integer> indices = new ArrayList();
+
+    public HashMap<Integer, Integer> ChristofidesEmparelhar(Aresta[] arestas){
+
+         
+       
+
+        //Mapear o algoritmo, é muito complicado de entender
+        for(Aresta a: arestas){
+            if(!indices.contains(a.VerticeAlvo().getIndex())){
+                indices.add(a.VerticeAlvo().getIndex());
+            }
+
+            if(!indices.contains(a.VerticeDeOrigem().getIndex())){
+                indices.add(a.VerticeDeOrigem().getIndex());
+            }
+        }
+
+        for(Aresta a: arestas){
+            System.out.println(indices.indexOf(a.VerticeDeOrigem().getIndex()) + " - " + indices.indexOf(a.VerticeAlvo().getIndex()));
+        }
 
         EdmondBlossomMaxMatch dsp = new EdmondBlossomMaxMatch();
 
@@ -35,6 +55,7 @@ public class EdmondsPerfectMatching {
         System.out.println("************** End Graph "
                  + "******************************");
 
+        return dsp.returnMatchings();
     }
 
 
@@ -407,13 +428,13 @@ public class EdmondsPerfectMatching {
                     }
                 }
 
-                int edgesCount = arestas.length-1;
+                int edgesCount = arestas.length;
                 g = new Graph();
                 g.nodeCount = nodesCount;
                 initGraph();
                 for (int k = 0; k < edgesCount; k++) {
-                    int u = arestas[k].VerticeDeOrigem().getIndex();
-                    int v = arestas[k].VerticeAlvo().getIndex();
+                    int u =  indices.indexOf(arestas[k].VerticeDeOrigem().getIndex());
+                    int v = indices.indexOf(arestas[k].VerticeAlvo().getIndex());
                     createNode(u, v);
                 }
             } catch (Exception e) {
@@ -442,8 +463,8 @@ public class EdmondsPerfectMatching {
 
         void createNode(int u, int v) {
             ArrayList<Integer> nodes = new ArrayList<Integer>();
-            g.nodes.get(u-1).addNbr(g.nodes.get(v-1));
-            g.nodes.get(v-1).addNbr(g.nodes.get(u-1));
+            g.nodes.get(u).addNbr(g.nodes.get(v));
+            g.nodes.get(v).addNbr(g.nodes.get(u));
         }
 
         void printMatchings(boolean print) {
@@ -455,12 +476,25 @@ public class EdmondsPerfectMatching {
             for (MNode node : g.nodes) {
                 if (node.matchedWith == null)
                     continue;
-                strBuild.append("Matched " + (node.label+1) + " : "
-                        + (node.matchedWith.label+1) + "\t");
+                strBuild.append("Matched " + (indices.get(node.label)) + " : "
+                        + (indices.get(node.matchedWith.label)) + "\t");
                 matches++;
             }
             strBuild.append("\n\nTotal Nodes Matched " + (matches) + " \t");
             System.out.println(strBuild);
+        }
+
+        public HashMap<Integer, Integer> returnMatchings() {
+            HashMap<Integer, Integer> arestas = new HashMap();
+
+            for (MNode node : g.nodes) {
+                if (node.matchedWith == null)
+                    continue;
+                if(!arestas.containsKey(indices.get(node.matchedWith.label)))
+                    arestas.put(indices.get(node.label), indices.get(node.matchedWith.label));
+            }
+
+            return arestas;
         }
 
     }

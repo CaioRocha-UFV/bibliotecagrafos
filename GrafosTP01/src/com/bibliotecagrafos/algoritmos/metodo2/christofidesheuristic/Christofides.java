@@ -5,6 +5,7 @@ import com.bibliotecagrafos.grafo.Grafo;
 import com.bibliotecagrafos.vertice.Vertice;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -13,7 +14,9 @@ public class Christofides {
     public static void  Christofides(Grafo grafo){
 
         // Árvore Geradora Mínima
+
         Aresta[] mst = KruskalSpanningTree.KuskalMSP(grafo);
+        
 
         // Print
         System.out.println("Following are the edges in "
@@ -34,8 +37,9 @@ public class Christofides {
         // Grafo  1-2-1-3-4-5  vira   1--3--5
         // Sendo que deve-se somar o peso das arestas para forma a nova aresta
 
-        /*
-        ArrayList<Integer> mstImpares = new ArrayList<Aresta>();
+
+
+        //Criando Grafo G(W), onde W são os vértices de grau impar da MST (movimento sem terra)
 
         // Isso apenas abstrai os graus dos vértices da nossa MST (arvore geradora)
         HashMap<Integer, HashSet<Integer>> vertices = new HashMap<>();
@@ -63,24 +67,75 @@ public class Christofides {
         }
 
         // Agora que sabemos o grau dos vértices podemos escolher apenas aqueles de grau impar
+        ArrayList<Integer> impares = new ArrayList<>();
         for (Integer vert : vertices.keySet()){
             if (vertices.get(vert).size() % 2 == 1){
-                // para cada vertice impar
-                // armazenar
-
-                // mas como fazer as arestas depois?
-                // isso tudo deve estar errado
+                impares.add(vert);
             }
         }
-*/
-        // Matching Perfeito Mínimo para os vértices de grau ímpar
-        EdmondsPerfectMatching epm = new EdmondsPerfectMatching();
-        epm.ChristofidesEmparelhar(mst);
 
+        ArrayList<Aresta> arestasImpares = SubGrafoDeImpares(impares, grafo);
+
+        System.out.println("--------------------");
+
+        for(Aresta a: arestasImpares){
+            System.out.println(a.VerticeDeOrigem().getIndex() + " - " + a.VerticeAlvo().getIndex());
+        }
+
+        System.out.println("--------------------");
+
+       // Matching Perfeito Mínimo para os vértices de grau ímpar
+        EdmondsPerfectMatching epm = new EdmondsPerfectMatching();
+
+        Aresta[] arestasArray = new Aresta[arestasImpares.size()];
+        for(int i = 0; i < arestasImpares.size(); i++) arestasArray[i] = arestasImpares.get(i);
+
+        HashMap<Integer, Integer> retorno = epm.ChristofidesEmparelhar(arestasArray);
+
+        ArrayList<Aresta> mstUniaoMatching = new ArrayList();
+        for(Aresta a: mst){
+            if(a.VerticeAlvo() != null) mstUniaoMatching.add(a);
+        }
+
+        for(int k: retorno.keySet()){
+            Vertice origem = grafo.getGrafo().get(k);
+            Vertice destino = grafo.getGrafo().get(retorno.get(k));
+            mstUniaoMatching.add(origem.ArestaCom(destino));
+        }  
+
+
+        for(Aresta a: mstUniaoMatching){
+            System.out.println("T U M: " + a.VerticeDeOrigem().getIndex() + " - " + a.VerticeAlvo().getIndex());
+        }
+
+
+        //Euler path
+        EulerianPath.findpath(mstUniaoMatching, grafo);
+
+        //Shortcut
     }
 
-    public void SubGrafoDeImpares(){
+    private static ArrayList<Aresta> SubGrafoDeImpares(ArrayList<Integer> impares, Grafo grafo){
+        ArrayList<Aresta> arestas = new ArrayList();
+        HashSet<Integer> visitados = new HashSet(); 
 
+        for(Integer i: impares) visitados.add(i);
+
+        for(Integer vert: impares){
+            Vertice verticeI = grafo.getGrafo().get(vert);
+            for(Aresta a: verticeI.getVizinhos()){
+                
+                //adiciona arestas já não adicionadas
+                if(visitados.contains(a.VerticeAlvo().getIndex())){
+                    arestas.add(a);
+                }
+
+                visitados.remove(vert);
+            }
+
+        }
+
+        return arestas;
     }
 }
 

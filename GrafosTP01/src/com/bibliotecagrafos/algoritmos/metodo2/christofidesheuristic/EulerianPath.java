@@ -4,24 +4,25 @@ import com.bibliotecagrafos.aresta.Aresta;
 import com.bibliotecagrafos.grafo.Grafo;
 import com.bibliotecagrafos.vertice.Vertice;
 
+import java.util.ArrayList;
 import java.util.Queue;
 import java.util.Stack;
 import java.util.Vector;
 
-public class EulerianPath {
+ public class EulerianPath {
 
     // Function to find out the path
     // It takes the adjacency matrix
     // representation of the graph as input
-    static void findpath(int[][] graph, int n)
+    static void findpath(ArrayList<Aresta> arestas, Grafo grafo)
     {
-        Vector<Integer> numofadj = new Vector<>();
+        //Vector<Integer> numofadj = new Vector<>();
 
         // Find out number of edges each vertex has
-        for (int i = 0; i < n; i++)
+       /*  for (int i = 0; i < n; i++)
             numofadj.add(accumulate(graph[i], 0));
-
-        // Find out how many vertex has odd number edges
+ */
+        /* // Find out how many vertex has odd number edges
         int startPoint = 0, numofodd = 0;
         for (int i = n - 1; i >= 0; i--)
         {
@@ -38,24 +39,24 @@ public class EulerianPath {
         {
             System.out.println("No Solution");
             return;
-        }
+        } */
 
         // If there is a path find the path
         // Initialize empty stack and path
         // take the starting current as discussed
         Stack<Integer> stack = new Stack<>();
         Vector<Integer> path = new Vector<>();
-        int cur = startPoint;
+        int cur = 1;
 
         // Loop will run until there is element in the stack
         // or current edge has some neighbour.
-        while (!stack.isEmpty() || accumulate(graph[cur], 0) != 0)
+        while (!stack.isEmpty() || contemAresta(arestas, cur))
         {
 
             // If current node has not any neighbour
             // add it to path and pop stack
             // set new current to the popped element
-            if (accumulate(graph[cur], 0) == 0)
+            if (!contemAresta(arestas, cur))
             {
                 path.add(cur);
                 cur = stack.pop();
@@ -67,13 +68,13 @@ public class EulerianPath {
             }
             else
             {
-                for (int i = 0; i < n; i++)
+                for (int i = 1; i <= grafo.Ordem(); i++)
                 {
-                    if (graph[cur][i] == 1)
+                    if (contarArestaEntre(arestas, cur, i) == 1)
                     {
                         stack.add(cur);
-                        graph[cur][i] = 0;
-                        graph[i][cur] = 0;
+                        removerAresta(arestas, cur, i);
+                        System.out.println("Index: " + i);
                         cur = i;
                         break;
                     }
@@ -87,43 +88,62 @@ public class EulerianPath {
         System.out.println(cur);
     }
 
-    static int accumulate(int[] arr, int sum)
-    {
-        for (int i : arr)
-            sum += i;
-        return sum;
+    private static boolean contemAresta(ArrayList<Aresta> arestas, int cur){
+        
+        for(Aresta a: arestas){
+            if(a.VerticeAlvo().getIndex() == cur || a.VerticeDeOrigem().getIndex() == cur) return true;
+        }
+
+
+        return false;
     }
 
-    // Driver Code
-    public static void main(String[] args)
-    {
+    private static boolean contemArestaEntre(ArrayList<Aresta> arestas, int cur, int i){
 
-        // Test case 1
-        int[][] graph1 = { { 0, 1, 0, 0, 1 },
-                { 1, 0, 1, 1, 0 },
-                { 0, 1, 0, 1, 0 },
-                { 0, 1, 1, 0, 0 },
-                { 1, 0, 0, 0, 0 } };
-        int n = graph1.length;
-        findpath(graph1, n);
+        for(Aresta a: arestas){
+            if(a.VerticeAlvo().getIndex() == cur && a.VerticeDeOrigem().getIndex() == i ) return true;
+            if(a.VerticeAlvo().getIndex() == i && a.VerticeDeOrigem().getIndex() == cur ) return true;
+            
+        }
 
-        // Test case 2
-        int[][] graph2 = { { 0, 1, 0, 1, 1 },
-                { 1, 0, 1, 0, 1 },
-                { 0, 1, 0, 1, 1 },
-                { 1, 1, 1, 0, 0 },
-                { 1, 0, 1, 0, 0 } };
-        n = graph2.length;
-        findpath(graph2, n);
-
-        // Test case 3
-        int[][] graph3 = { { 0, 1, 0, 0, 1 },
-                { 1, 0, 1, 1, 1 },
-                { 0, 1, 0, 1, 0 },
-                { 0, 1, 1, 0, 1 },
-                { 1, 1, 0, 1, 0 } };
-        n = graph3.length;
-        findpath(graph3, n);
+        return false;
     }
+
+    private static void removerAresta(ArrayList<Aresta> arestas, int cur, int i){
+
+        int indexRemove = -1;
+        int j = 0;
+        for(Aresta a: arestas){
+            if(a.VerticeAlvo().getIndex() == cur && a.VerticeDeOrigem().getIndex() == i ){
+                indexRemove = j;
+                break;
+            } 
+            if(a.VerticeAlvo().getIndex() == i && a.VerticeDeOrigem().getIndex() == cur ) {
+                indexRemove = j;
+                break;
+            };
+
+            j++;
+        }
+
+        if(indexRemove != -1) arestas.remove(indexRemove);
+    }
+
+    public static int contarArestaEntre(ArrayList<Aresta> arestas, int cur, int i){
+        int j = 0;
+        for(Aresta a: arestas){
+            if(a.VerticeAlvo().getIndex() == cur && a.VerticeDeOrigem().getIndex() == i ){
+                j++;
+                break;
+            } 
+            if(a.VerticeAlvo().getIndex() == i && a.VerticeDeOrigem().getIndex() == cur ) {
+                j++;
+                break;
+            };
+        }
+
+        return j;
+    }
+
 
 }

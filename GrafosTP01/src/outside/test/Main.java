@@ -18,7 +18,7 @@ public class Main {
 
         System.out.println("Comecando a criar o grafo.");
         //shy.CriarGrafo("berlin52.tsp");
-        shy.CriarGrafo("video.txt");
+        shy.CriarGrafo("/home/guilherme/Área de Trabalho/Matérias PER2/Grafos/bibliotecagrafos/GrafosTP01/testemsp.txt");
         System.out.println("Leitura do grafo encerrada.");
         System.out.println("Ordem o grafo: " + shy.Ordem());
         System.out.println("Tamanho grafo: " + shy.Tamanho());
